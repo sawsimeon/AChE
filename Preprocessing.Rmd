@@ -2,7 +2,7 @@
 title: "Preprocessing"
 author: "Saw Simeon"
 date: "June 7, 2016"
-output: html_document
+output: pdf_document
 ---
 
 ## Import data
@@ -14,9 +14,13 @@ library(readxl)
 
 
 df_raw <- suppressWarnings(read_excel("Human_AChE.xlsx"))
-names <- c("CMPD_CHEMBLID", "CANONICAL_SMILES", "STANDARD_TYPE", 
-           "RELATION", "STANDARD_VALUE", "STANDARD_UNITS", "PROTEIN_ACCESSION", "PREF_NAME", 
-           "PUBMED_ID", "JOURNAL", "YEAR", "VOLUME", "ISSUE", "FIRST_PAGE", "MOLWEIGHT", "ALOGP", 
+names <- c("CMPD_CHEMBLID", "CANONICAL_SMILES", "STANDARD_TYPE",
+           "RELATION", "STANDARD_VALUE", "STANDARD_UNITS",
+           "PROTEIN_ACCESSION", "PREF_NAME", 
+      "PUBMED_ID",
+      "JOURNAL", "YEAR", "VOLUME", 
+      "ISSUE", "FIRST_PAGE", "MOLWEIGHT", 
+      "ALOGP", 
            "PSA", "NUM_RO5_VIOLATIONS")
 df <- df_raw[, names]
 df_1 <- subset(df, STANDARD_TYPE == "IC50")
@@ -81,12 +85,11 @@ cleaned_redundant <- data.frame(CANONICAL_SMILES, STANDARD_VALUE)
 curated_data <- rbind(non_redundant, cleaned_redundant)
 
 unique <- paste0("number of unique redundant compounds: ", length(unique))
-sd_2 <- paste0("Compounds left that are kept which has a sd of lower than two: ", nrow(keep))
+sd_2 <- paste0("Compounds left that are kept", " which has a sd of lower than two: ",
+               nrow(keep))
 combined <- paste0("Curated data points: ", nrow(curated_data))
 
 message <- c(unique, sd_2, combined)
 print(message)
-
-
 
 ```
