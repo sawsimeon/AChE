@@ -1,0 +1,329 @@
+---
+title: "Random Forest Regression"
+author: "Saw Simeon"
+date: "June 8, 2559 BE"
+output: pdf_document
+---
+
+Modeling with Random forest 
+
+```{r}
+randomForest_training <- function(x){
+  library(randomForest)
+  
+  library(parallel)
+  library(doSNOW)
+  cl <- makeCluster(8)
+  registerDoSNOW(cl)
+  
+  R2 <- function(y, equation, ... ){
+  1 - (sum((y-predict(equation))^2)/sum((y-mean(y))^2))
+}
+rm2 <- function(y, x, ... ){  
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) { 
+    return(R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x)))))))
+  } else { 
+    return(R2(y,(lm(y ~ x))))
+  } 
+}
+rm2.reverse <- function(y, x, ... ){
+  return(R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))
+}
+average.rm2 <- function(y, x, ... ){
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) {
+    return(((R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x))))))+ R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y))))))))/2)
+  } else { 
+    return(((R2(y,(lm(y ~ x))))  + (R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))  )/2)
+  }
+}
+delta.rm2 <- function(y, x, ... ){
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) {
+    return(abs((R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x))))))  -  R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))))
+  } else { 
+    return(abs((R2(y,(lm(y ~ x)))) - (R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))  ))
+  }
+}
+
+  
+  results <- list(100)
+  results <- foreach(i = 1:100 ) %dopar% {
+    
+    
+    
+  x <- na.omit(x)
+  para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+    in_train_para <- sample(nrow(para),
+                            size = as.integer(nrow(para) * 0.8),
+                            replace = FALSE)
+    Train <- para[in_train_para, ]
+    Test <- para[-in_train_para, ]
+    
+    
+    model_train <- ranger::ranger(pIC50~., data = Train, write.forest = TRUE, save.memory = TRUE)
+    #actual <- train$Activity
+    prediction <- predict(model_train, Train)
+    prediction <- prediction$predictions
+    
+    #prediction <- predict(model, Train)
+    value <- data.frame(obs = Train$pIC50, pred = prediction)
+    rm(para)
+    rm(Train)
+    rm(Test)
+    rm(model_train)
+    rm(prediction)
+    labeling <- c("obs", "pred")
+    colnames(value) <- labeling
+    result <- caret::defaultSummary(value)
+    result_rm2 <- rm2(value$obs, value$pred)
+    names(result_rm2) <- "rm2"
+    results_reverse <- rm2.reverse(value$obs, value$pred)
+    names(results_reverse) <- "reverse.rm2"
+    result_average_rm2 <- average.rm2(value$obs, value$pred)
+    names(result_average_rm2) <- "average.rm2"
+    result_delta <- delta.rm2(value$obs, value$pred)
+    names(result_delta) <- "delta.rm"
+    
+    results[[i]] <- c(result, result_rm2, results_reverse, result_average_rm2, result_delta)
+  }
+  return(results)
+  stopCluster(cl)
+}
+
+mean_and_sd <- function(x) {
+  c(round(rowMeans(x, na.rm = TRUE), digits = 2),
+    round(genefilter::rowSds(x, na.rm = TRUE), digits = 2))
+}
+
+randomForest_train <- function(x) {
+  ok <- randomForest_training(x)
+  data <- data.frame(ok)
+  result <- mean_and_sd(data)
+  df <- data.frame(result)
+  R2_and_RMSE <- t(df)
+  label <- c("RMSE_Mean", "Rsquared_Mean", "RM2_Mean", "Reverse_RM2_Mean", "Average_RM2_Mean", "Delta_RM2_Mean",
+             "RMSE_SD", "Rsquared_SD", "RM2_SD", "Reverse_RM2_SD", "Average_RM2_SD", "Delta_RM2_SD")
+  colnames(R2_and_RMSE) <- label
+  return(R2_and_RMSE)
+}
+
+rf_cross_validation <- function(x){
+  library(randomForest)
+  
+  library(parallel)
+  library(doSNOW)
+  cl <- makeCluster(8)
+  registerDoSNOW(cl)
+  
+  R2 <- function(y, equation, ... ){
+  1 - (sum((y-predict(equation))^2)/sum((y-mean(y))^2))
+}
+rm2 <- function(y, x, ... ){  
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) { 
+    return(R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x)))))))
+  } else { 
+    return(R2(y,(lm(y ~ x))))
+  } 
+}
+rm2.reverse <- function(y, x, ... ){
+  return(R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))
+}
+average.rm2 <- function(y, x, ... ){
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) {
+    return(((R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x))))))+ R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y))))))))/2)
+  } else { 
+    return(((R2(y,(lm(y ~ x))))  + (R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))  )/2)
+  }
+}
+delta.rm2 <- function(y, x, ... ){
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) {
+    return(abs((R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x))))))  -  R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))))
+  } else { 
+    return(abs((R2(y,(lm(y ~ x)))) - (R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))  ))
+  }
+}
+
+  
+  results <- list(100)
+  results <- foreach(i = 1:100 ) %dopar% {
+    
+    cool <- na.omit(x)
+    para <- dplyr::sample_n(cool, size = 2571, replace = TRUE)
+    in_train_para <- sample(nrow(para),
+                            size = as.integer(nrow(para) * 0.8),
+                            replace = FALSE)
+    myData <- para[in_train_para, ]
+    Test <- para[-in_train_para, ]
+    rm(Test)
+    k = 10
+    index <- sample(1:k, nrow(myData), replace = TRUE)
+    folds <- 1:k
+    myRes <- data.frame()
+    for (j in 1:k) {
+      training <- subset(myData, index %in% folds[-j])
+    testing <- subset(myData, index %in% c(j))
+    model_train <- ranger::ranger(pIC50~., data = training, write.forest = TRUE, save.memory = TRUE)
+    prediction <- predict(model_train, testing)
+    prediction <- prediction$predictions
+    
+    ok <- data.frame(obs = testing$pIC50, pred = prediction)
+    value <- rbind(myRes, ok)
+    }
+    rm(myData)
+    rm(para)
+    rm(in_trian_para)
+    rm(training)
+    rm(testing)
+    rm(prediction)
+    labeling <- c("obs", "pred")
+    colnames(value) <- labeling
+    result <- caret::defaultSummary(value)
+    result_rm2 <- rm2(value$obs, value$pred)
+    names(result_rm2) <- "rm2"
+    results_reverse <- rm2.reverse(value$obs, value$pred)
+    names(results_reverse) <- "reverse.rm2"
+    result_average_rm2 <- average.rm2(value$obs, value$pred)
+    names(result_average_rm2) <- "average.rm2"
+    result_delta <- delta.rm2(value$obs, value$pred)
+    names(result_delta) <- "delta.rm"
+    
+    results[[i]] <- c(result, result_rm2, results_reverse, result_average_rm2, result_delta)
+  }
+  return(results)
+}
+
+rf_10_CV <- function(x) {
+  ok <- rf_cross_validation(x)
+  data <- data.frame(ok)
+  result <- mean_and_sd(data)
+  df <- data.frame(result)
+  R2_and_RMSE <- t(df)
+  label <- c("RMSE_Mean", "Rsquared_Mean", "RM2_Mean", "Reverse_RM2_Mean", "Average_RM2_Mean", "Delta_RM2_Mean",
+             "RMSE_SD", "Rsquared_SD", "RM2_SD", "Reverse_RM2_SD", "Average_RM2_SD", "Delta_RM2_SD")
+  colnames(R2_and_RMSE) <- label
+  return(R2_and_RMSE)
+}
+
+
+randomForest_testing <- function(x){
+  library(parallel)
+  library(doSNOW)
+  cl <- makeCluster(8)
+  registerDoSNOW(cl)
+  
+  R2 <- function(y, equation, ... ){
+  1 - (sum((y-predict(equation))^2)/sum((y-mean(y))^2))
+}
+rm2 <- function(y, x, ... ){  
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) { 
+    return(R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x)))))))
+  } else { 
+    return(R2(y,(lm(y ~ x))))
+  } 
+}
+rm2.reverse <- function(y, x, ... ){
+  return(R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))
+}
+average.rm2 <- function(y, x, ... ){
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) {
+    return(((R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x))))))+ R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y))))))))/2)
+  } else { 
+    return(((R2(y,(lm(y ~ x))))  + (R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))  )/2)
+  }
+}
+delta.rm2 <- function(y, x, ... ){
+  if ((R2(y,(lm(y ~ x)))) > R2(y,(lm(y ~ -1 + x)))) {
+    return(abs((R2(y,(lm(y ~ x)))*( 1-(sqrt(R2(y,(lm(y ~ x)))-R2(y,(lm(y ~ -1 + x))))))  -  R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))))
+  } else { 
+    return(abs((R2(y,(lm(y ~ x)))) - (R2(x,(lm(x ~ y)))*( 1-(sqrt(R2(x,(lm(x ~ y)))-R2(x,(lm(x ~ -1 + y)))))))  ))
+  }
+}
+
+  
+  results <- list(100)
+  results <- foreach(i = 1:100 ) %dopar% {
+    
+    x <- na.omit(x)
+    para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+    in_train_para <- sample(nrow(para),
+                            size = as.integer(nrow(para) * 0.8),
+                            replace = FALSE)
+    Train <- para[in_train_para, ]
+    Test <- para[-in_train_para, ]
+    model_train <- ranger::ranger(pIC50~., data = Train, write.forest = TRUE, save.memory = TRUE)
+    #actual <- train$Activity
+    prediction <- predict(model_train, Test)
+    prediction <- prediction$predictions
+    value <- data.frame(obs = Test$pIC50, pred = prediction)
+    rm(Train)
+    rm(Test)
+    rm(para)
+    rm(in_train_para)
+    rm(prediction)
+    labeling <- c("obs", "pred")
+    colnames(value) <- labeling
+    result <- caret::defaultSummary(value)
+    result_rm2 <- rm2(value$obs, value$pred)
+    names(result_rm2) <- "rm2"
+    results_reverse <- rm2.reverse(value$obs, value$pred)
+    names(results_reverse) <- "reverse.rm2"
+    result_average_rm2 <- average.rm2(value$obs, value$pred)
+    names(result_average_rm2) <- "average.rm2"
+    result_delta <- delta.rm2(value$obs, value$pred)
+    names(result_delta) <- "delta.rm"
+    
+    results[[i]] <- c(result, result_rm2, results_reverse, result_average_rm2, result_delta)
+  }
+  return(results)
+  stopCluster(cl)
+}
+
+randomForest_test <- function(x) {
+  ok <- randomForest_testing(x)
+  data <- data.frame(ok)
+  result <- mean_and_sd(data)
+  df <- data.frame(result)
+  R2_and_RMSE <- t(df)
+  label <- c("RMSE_Mean", "Rsquared_Mean", "RM2_Mean", "Reverse_RM2_Mean", "Average_RM2_Mean", "Delta_RM2_Mean",
+             "RMSE_SD", "Rsquared_SD", "RM2_SD", "Reverse_RM2_SD", "Average_RM2_SD", "Delta_RM2_SD")
+  colnames(R2_and_RMSE) <- label
+  return(R2_and_RMSE)
+}
+
+
+
+```
+
+### Training results for 12 data frame with random forest 
+
+```{r, cache= TRUE}
+input <- readRDS("data.Rds")
+training_results <- lapply(input, function(x) {
+  results <- randomForest_train(x)
+  return(results)
+})
+training_results
+```
+
+### 10-Fold CV results for 12 data frame with random forest 
+
+```{r, cache= TRUE}
+input <- readRDS("data.Rds")
+cross_validation_results <- lapply(input, function(x) {
+  results <- rf_10_CV(x)
+  return(results)
+})
+cross_validation_results
+
+```
+
+### Testing results for 12 data frame with random forest 
+
+```{r, cache= TRUE}
+input <- readRDS("data.Rds")
+testing_results <- lapply(input, function(x) {
+  results <- randomForest_test(x)
+  return(results)
+})
+testing_results
+
+```
