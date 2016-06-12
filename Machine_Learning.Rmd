@@ -1,7 +1,7 @@
 ---
 title: "Random Forest Regression"
 author: "Saw Simeon"
-date: "June 8, 2559 BE"
+date: "June 8, 2016"
 output: pdf_document
 ---
 
