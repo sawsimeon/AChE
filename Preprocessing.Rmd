@@ -12,8 +12,6 @@ Import the bioactivity data obtained from the ChEMBL database as a dataframe. Se
 
 ```{r}
 library(readxl)
-
-
 df_raw <- suppressWarnings(read_excel("Human_AChE.xlsx"))
 names <- c("CMPD_CHEMBLID", "CANONICAL_SMILES", "STANDARD_TYPE",
            "RELATION", "STANDARD_VALUE", "STANDARD_UNITS",
