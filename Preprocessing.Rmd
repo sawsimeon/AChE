@@ -1,6 +1,7 @@
 ---
 title: "Preprocessing"
-author: "Saw Simeon"
+author: Saw Simeon, Nuttapat Anuwongcharoen, Watshara Shoombuatong, Aijaz Ahmad Malik,
+  Virapong Prachayasittikul, Jarl E. S. Wikberg and Chanin Nantasenamat
 date: "June 7, 2016"
 output: pdf_document
 ---
@@ -37,7 +38,7 @@ print(message)
 
 ## Remove redundant rows
 
-```{r}
+```{r, tidy= TRUE}
 
 ID <- df_4$CMPD_CHEMBLID
 IC50_nm <- df_4$STANDARD_VALUE
@@ -83,13 +84,16 @@ STANDARD_VALUE <- keep$STANDARD_VALUE
 CANONICAL_SMILES <- keep$CANONICAL_SMILES
 cleaned_redundant <- data.frame(CANONICAL_SMILES, STANDARD_VALUE)
 curated_data <- rbind(non_redundant, cleaned_redundant)
+curated_data_na_removed <- na.omit(curated_data)
 
 unique <- paste0("number of unique redundant compounds: ", length(unique))
 sd_2 <- paste0("Compounds left that are kept", " which has a sd of lower than two: ",
                nrow(keep))
-combined <- paste0("Curated data points: ", nrow(curated_data))
-
-message <- c(unique, sd_2, combined)
+combined <- paste0("Combined data points: ", nrow(curated_data))
+non_redundant_compound <- paste0("number of non-redundant compounds: ", 
+                                 nrow(non_redundant))
+curated <- paste0("number of curated data points where missing smiles are removed: ", nrow(curated_data_na_removed))
+message <- c(non_redundant_compound, unique, sd_2, combined, curated)
 print(message)
 
 ```
