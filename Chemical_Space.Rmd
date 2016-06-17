@@ -1,6 +1,7 @@
 ---
-title: "Visual representation of Lipinski’s descriptors"
-author: "Saw Simeon"
+title: "Visual representation of Lipinski's descriptors"
+author: Saw Simeon, Nuttapat Anuwongcharoen, Watshara Shoombuatong, Aijaz Ahmad Malik,
+  Virapong Prachayasittikul, Jarl E. S. Wikberg and Chanin Nantasenamat
 date: "June 7, 2016"
 output: pdf_document
 ---
@@ -27,8 +28,9 @@ Activity <- data.frame(Activity)
 
 ### Chemical space of AChE inhibitors are shown as active (green), inactive (red) and intermediate (blue)
 
-```{r}
+```{r, warning= FALSE, message=FALSE}
 library(ggplot2)
+library(cowplot)
 data_2 <- cbind(Activity, descriptors)
 data_2 <- na.omit(data_2)
 data_plot <- data.frame(data_2)
@@ -45,9 +47,9 @@ p <- p + theme(legend.position = ("none"),
 print(p)
 ```
 
-### Boxplot of Lipinski's rule-of-five descriptors (ALog) 
+### Boxplot of Lipinski's rule-of-five descriptors (ALogP) 
 
-```{r}
+```{r, warning= FALSE, message=FALSE}
 
 p_1 <- ggplot(data_plot, aes(factor(Activity), ALogP))
 p_1 <- p_1 + geom_boxplot(aes(fill = factor(Activity)))
@@ -65,7 +67,7 @@ print(p_1)
 
 ### Boxplot of Lipinski's rule-of-five descriptors (nHBAcc) 
 
-```{r}
+```{r, warning= FALSE, message=FALSE}
 
 p_2 <- ggplot(data_plot, aes(factor(Activity), nHBAcc))
 p_2 <- p_2 + geom_boxplot(aes(fill = factor(Activity)))
@@ -82,7 +84,7 @@ print(p_2)
 
 ### Boxplot of Lipinski's rule-of-five descriptors (nHBDon) 
 
-```{r}
+```{r, warning= FALSE, message=FALSE}
 
 p_3 <- ggplot(data_plot, aes(factor(Activity), nHBDon))
 p_3 <- p_3 + geom_boxplot(aes(fill = factor(Activity)))
@@ -99,7 +101,7 @@ print(p_3)
 
 ### Boxplot of Lipinski's rule-of-five descriptors (MW) 
 
-```{r}
+```{r, warning= FALSE, message=FALSE}
 
 
 p_4 <- ggplot(data_plot, aes(factor(Activity), MW))
