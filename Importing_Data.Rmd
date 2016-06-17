@@ -33,10 +33,10 @@ read_file <- function(x){
 
 ### Reading each data frame and printing out of the dimension of each data Frame 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 
-#AtomPairs2D_fingerPrintCount <- read_file("data/2D_Atom_Pairs_Count.csv")
-#AtomPairs2D_fingerPrinter <- read_file("data/2D_Atom_Pairs.csv")
+AtomPairs2D_fingerPrintCount <- read_file("data/2D_Atom_Paris_Count.csv")
+AtomPairs2D_fingerPrinter <- read_file("data/2D_Atom_Pairs.csv")
 Substructure_fingerPrintCount <- read_file("data/Substructure_Count.csv")
 Substructure_fingerPrinter <- read_file("data/Substructure.csv")
 Extended_finterPrinter <- read_file("data/CDK_Extended.csv")
