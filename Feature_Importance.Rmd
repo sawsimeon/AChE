@@ -1,6 +1,7 @@
 ---
 title: "Mechanistic interpretation of feature importance"
-author: "Saw Simeon"
+author: Saw Simeon, Nuttapat Anuwongcharoen, Watshara Shoombuatong, Aijaz Ahmad Malik,
+  Virapong Prachayasittikul, Jarl E. S. Wikberg and Chanin Nantasenamat
 date: "June 9, 2016"
 output: pdf_document
 ---
@@ -41,7 +42,7 @@ randomForest_feature_importance <- function(x) {
 
 Generating the plot of feature importance
 
-```{r, fig.width=10, fig.height=10}
+```{r, fig.width=10, fig.height=10, warning=FALSE, message=FALSE}
 input <- readRDS(file = "data.Rds")
 SubStructure_fingerPrintCount <- input$Substructure_fingerPrintCount
 results_feature_importance_RF <- randomForest_feature_importance(SubStructure_fingerPrintCount)
@@ -52,6 +53,7 @@ data_melt <- suppressWarnings(melt(data1, id.vars = "features"))
 #data_melt <- melt(data1, id.vars = "features")
 data_melt$features <- factor(data_melt$features)
 library(ggplot2)
+set.seed(1)
 plot_feature <- ggplot(data_melt, aes(x = reorder(features, value, FUN = median), y = value)) +
   geom_boxplot(fill = "#F8766D", colour = "black", alpha = 0.5) +
   theme_bw() + xlab("") + ylab("Gini Index") + coord_flip() + theme(
