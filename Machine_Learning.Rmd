@@ -1,6 +1,7 @@
 ---
 title: "Random Forest Regression"
-author: "Saw Simeon"
+author: Saw Simeon, Nuttapat Anuwongcharoen, Watshara Shoombuatong, Aijaz Ahmad Malik,
+  Virapong Prachayasittikul, Jarl E. S. Wikberg and Chanin Nantasenamat
 date: "June 8, 2016"
 output: pdf_document
 ---
@@ -51,7 +52,7 @@ delta.rm2 <- function(y, x, ... ){
     
     
   x <- na.omit(x)
-  para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+  para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
     in_train_para <- sample(nrow(para),
                             size = as.integer(nrow(para) * 0.8),
                             replace = FALSE)
@@ -147,7 +148,7 @@ delta.rm2 <- function(y, x, ... ){
   results <- foreach(i = 1:100 ) %dopar% {
     
     cool <- na.omit(x)
-    para <- dplyr::sample_n(cool, size = 2571, replace = TRUE)
+    para <- dplyr::sample_n(cool, size = 2570, replace = TRUE)
     in_train_para <- sample(nrow(para),
                             size = as.integer(nrow(para) * 0.8),
                             replace = FALSE)
@@ -243,7 +244,7 @@ delta.rm2 <- function(y, x, ... ){
   results <- foreach(i = 1:100 ) %dopar% {
     
     x <- na.omit(x)
-    para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+    para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
     in_train_para <- sample(nrow(para),
                             size = as.integer(nrow(para) * 0.8),
                             replace = FALSE)
@@ -295,7 +296,7 @@ randomForest_test <- function(x) {
 
 ### Training results for 12 data frame with random forest 
 
-```{r, cache= TRUE}
+```{r, cache= TRUE, error = FALSE, warning=FALSE, message=FALSE}
 input <- readRDS("data.Rds")
 training_results <- lapply(input, function(x) {
   results <- randomForest_train(x)
@@ -306,7 +307,7 @@ training_results
 
 ### 10-Fold CV results for 12 data frame with random forest 
 
-```{r, cache= TRUE}
+```{r, cache= TRUE, error = FALSE, warning=FALSE, message=FALSE}
 input <- readRDS("data.Rds")
 cross_validation_results <- lapply(input, function(x) {
   results <- rf_10_CV(x)
@@ -318,7 +319,7 @@ cross_validation_results
 
 ### Testing results for 12 data frame with random forest 
 
-```{r, cache= TRUE}
+```{r, cache= TRUE, error = FALSE, warning=FALSE, message=FALSE}
 input <- readRDS("data.Rds")
 testing_results <- lapply(input, function(x) {
   results <- randomForest_test(x)
