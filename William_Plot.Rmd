@@ -1,13 +1,14 @@
 ---
-title: "Applicability Domain (William Plot)"
+title: "Applicability Domain (Williams Plot)"
 author: Saw Simeon, Nuttapat Anuwongcharoen, Watshara Shoombuatong, Aijaz Ahmad Malik,
   Virapong Prachayasittikul, Jarl E. S. Wikberg and Chanin Nantasenamat
 date: "June 19, 2016"
 output: pdf_document
 ---
 
+# Function to create Williams Plot (Red = External, Cyan = Internal)
 
-```{r}
+```{r, tidy = TRUE}
 
 file <- function(x) {
   library(randomForest)
@@ -65,7 +66,8 @@ plot_william <- function(x, title) {
   geom_point(aes(color = Label), alpha = .20, size = 6) + 
   ggtitle(title) +
        xlab("Leverage") + ylab("Standardized Residuals") + 
-       geom_hline(yintercept = 3) + geom_hline(yintercept = -3) +
+       geom_hline(yintercept = 3, color = "red", linetype = 2) +
+    geom_hline(yintercept = -3, color = "red", linetype = 2) +
      theme(
       panel.border = element_rect(linetype = "solid", colour = "black",
                                   fill = NA, size = 1),
@@ -93,7 +95,7 @@ input <- readRDS("data.Rds")
 df <- input$FingerPrinter
 plot <- plot_william(df, title = "CDK Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -104,7 +106,7 @@ input <- readRDS("data.Rds")
 df <- input$Extended_finterPrinter
 plot <- plot_william(df, title = "CDK Extended Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -115,7 +117,7 @@ input <- readRDS("data.Rds")
 df <- input$GraphOnly_FingerPrinter
 plot <- plot_william(df, title = "CDK Graph Only Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -126,7 +128,7 @@ input <- readRDS("data.Rds")
 df <- input$Estate_FingerPrinter
 plot <- plot_william(df, title = "E-State Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -137,7 +139,7 @@ input <- readRDS("data.Rds")
 df <- input$MACCS_FingerPrinter
 plot <- plot_william(df, title = "MACCS Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -148,7 +150,7 @@ input <- readRDS("data.Rds")
 df <- input$Pubchem_FingerPrinter
 plot <- plot_william(df, title = "PubChem Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -159,7 +161,7 @@ input <- readRDS("data.Rds")
 df <- input$Substructure_fingerPrinter
 plot <- plot_william(df, title = "Substructure Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -170,7 +172,7 @@ input <- readRDS("data.Rds")
 df <- input$Substructure_fingerPrintCount
 plot <- plot_william(df, title = "Substructure Count")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -178,10 +180,10 @@ plot + geom_vline(xintercept = h, linetype = 2)
 
 ```{r, fig.width = 7, fig.height = 7,  error = FALSE, message=FALSE, warning=FALSE}
 input <- readRDS("data.Rds")
-df <- input$Substructure_fingerPrintCount
+df <- input$KlekotaRoth_FingerPrinter
 plot <- plot_william(df, title = "Klekota-Roth Fingerprint")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -189,10 +191,10 @@ plot + geom_vline(xintercept = h, linetype = 2)
 
 ```{r, fig.width = 7, fig.height = 7,  error = FALSE, message=FALSE, warning=FALSE}
 input <- readRDS("data.Rds")
-df <- input$Substructure_fingerPrintCount
+df <- input$KlekotaRoth_FingerprintCount
 plot <- plot_william(df, title = "Klekota-Roth count")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -200,10 +202,10 @@ plot + geom_vline(xintercept = h, linetype = 2)
 
 ```{r, fig.width = 7, fig.height = 7,  error = FALSE, message=FALSE, warning=FALSE}
 input <- readRDS("data.Rds")
-df <- input$Substructure_fingerPrintCount
+df <- input$AtomPairs2D_fingerPrinter
 plot <- plot_william(df, title = "2D Atom Pairs")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
@@ -211,9 +213,9 @@ plot + geom_vline(xintercept = h, linetype = 2)
 
 ```{r, fig.width = 7, fig.height = 7,  error = FALSE, message=FALSE, warning=FALSE}
 input <- readRDS("data.Rds")
-df <- input$Substructure_fingerPrintCount
+df <- input$AtomPairs2D_fingerPrintCount
 plot <- plot_william(df, title = "2D Atom Pairs Count")
 h <- 3*((dim(df)[2] - 1) + 1) / dim(df)[1]*0.8
-plot + geom_vline(xintercept = h, linetype = 2)
+plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
