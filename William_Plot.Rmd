@@ -42,6 +42,8 @@ file <- function(x) {
 }
 
 
+
+
 get_leverage <- function(x) {
   file <- file(x)
   x <- file[, 1]
@@ -56,6 +58,8 @@ get_leverage <- function(x) {
   names(df) <- c("hv", "std.error", "Label")
   return(df)
 }
+
+
 
 plot_william <- function(x, title) {
   library(ggplot2)
@@ -84,9 +88,12 @@ plot_william <- function(x, title) {
 }
 
 
-
-
 ```
+
+\newpage
+
+
+
 
 # CDK fingerprint
 
@@ -165,6 +172,7 @@ plot + geom_vline(xintercept = h, linetype = 2, color = "red")
 
 ```
 
+\newpage
 # Substructure count
 
 ```{r, fig.width = 7, fig.height = 7,  error = FALSE, message=FALSE, warning=FALSE}
