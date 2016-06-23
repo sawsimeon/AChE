@@ -20,7 +20,7 @@ scrambling_R2 <- function(x) {
   results <- list(50)
   results <- foreach (i = 1:50) %dopar% {
     x <- na.omit(x)
-    para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+    para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
     in_train_para <- sample(nrow(para),
                             size = as.integer(nrow(para) * 0.8),
                             replace = FALSE)
@@ -54,7 +54,7 @@ scrambling_R2 <- function(x) {
 
 real_R2 <- function(x) {
   x <- na.omit(x)
-  para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+  para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
   in_train_para <- sample(nrow(para),
                           size = as.integer(nrow(para) * 0.8),
                           replace = FALSE)
@@ -86,7 +86,7 @@ scrambling_Q2 <- function(x) {
   
   results <- list(50)
   results <- foreach (i = 1:50) %dopar% {
-    para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+    para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
   in_train_para <- sample(nrow(para),
                           size = as.integer(nrow(para) * 0.8),
                           replace = FALSE)
@@ -137,7 +137,7 @@ scrambling_Q2 <- function(x) {
 
 
 real_Q2 <- function(x) {
-  para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+  para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
   in_train_para <- sample(nrow(para),
                           size = as.integer(nrow(para) * 0.8),
                           replace = FALSE)
