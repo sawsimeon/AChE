@@ -20,7 +20,9 @@ randomForest_feature_importance <- function(x) {
   results <- list(100)
   results <- foreach (i = 1:100) %dopar% {
     x <- na.omit(x)
-    para <- dplyr::sample_n(x, size = 2571, replace = TRUE)
+    set.seed(i)
+    para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
+    set.seed(i)
     in_train_para <- sample(nrow(para),
                             size = as.integer(nrow(para) * 0.8),
                             replace = FALSE)
@@ -28,6 +30,7 @@ randomForest_feature_importance <- function(x) {
     Test <- para[-in_train_para, ]
     rm(in_train_para)
     rm(Test)
+    set.seed(i)
     model <- ranger::ranger(pIC50~., data = Train, importance = 'impurity',
                                   write.forest = TRUE, save.memory = TRUE)
     rm(Train)
@@ -42,7 +45,7 @@ randomForest_feature_importance <- function(x) {
 
 Generating the plot of feature importance
 
-```{r, fig.width=10, fig.height=10, warning=FALSE, message=FALSE}
+```{r, fig.width=10, fig.height=20, warning=FALSE, message=FALSE, fig.align='center'}
 input <- readRDS(file = "data.Rds")
 SubStructure_fingerPrintCount <- input$Substructure_fingerPrintCount
 set.seed(10)

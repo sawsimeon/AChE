@@ -14,6 +14,7 @@ file <- function(x) {
   library(randomForest)
   library(caret)
   library(ranger)
+  library(cowplot)
   set.seed(10)
   para <- dplyr::sample_n(x, size = 2570, replace = TRUE)
   set.seed(3)
@@ -85,6 +86,8 @@ plot_graph_interval <- function(x) {
 
 ```
 
+\pagebreak
+
 # CDK fingerprint
 
 ```{r, fig.width = 10, fig.height = 10, error = FALSE, message = FALSE, warning= FALSE}
@@ -92,6 +95,8 @@ input <- readRDS("data.Rds")
 df <- input$FingerPrinter
 plot_graph_interval(df)
 ```
+
+\pagebreak
 
 # CDK extended fingerprint
 
@@ -101,6 +106,8 @@ df <- input$Extended_finterPrinter
 plot_graph_interval(df)
 ```
 
+\pagebreak
+
 # CDK graph only fingerprint
 
 ```{r, fig.width = 10, fig.height = 10, error = FALSE, message = FALSE, warning= FALSE}
@@ -108,6 +115,8 @@ input <- readRDS("data.Rds")
 df <- input$GraphOnly_FingerPrinter
 plot_graph_interval(df)
 ```
+
+\pagebreak
 
 # E-state fingerprint
 
@@ -117,6 +126,8 @@ df <- input$Extended_finterPrinter
 plot_graph_interval(df)
 ```
 
+\pagebreak
+
 # MACCS fingerprint
 
 ```{r, fig.width = 10, fig.height = 10, error = FALSE, message = FALSE, warning= FALSE}
@@ -124,6 +135,8 @@ input <- readRDS("data.Rds")
 df <- input$MACCS_FingerPrinter
 plot_graph_interval(df)
 ```
+
+\pagebreak
 
 # PubChem fingerprint
 
@@ -133,6 +146,8 @@ df <- input$Pubchem_FingerPrinter
 plot_graph_interval(df)
 ```
 
+\pagebreak
+
 # Substructure fingerprint
 
 ```{r, fig.width = 10, fig.height = 10, error = FALSE, message = FALSE, warning= FALSE}
@@ -140,6 +155,8 @@ input <- readRDS("data.Rds")
 df <- input$Substructure_fingerPrinter
 plot_graph_interval(df)
 ```
+
+\pagebreak
 
 # Substructure count
 
@@ -149,6 +166,8 @@ df <- input$Substructure_fingerPrintCount
 plot_graph_interval(df)
 ```
 
+\pagebreak
+
 # Klekota-Roth fingerprint
 
 ```{r, fig.width = 10, fig.height = 10, error = FALSE, message = FALSE, warning= FALSE}
@@ -156,6 +175,8 @@ input <- readRDS("data.Rds")
 df <- input$KlekotaRoth_FingerPrinter
 plot_graph_interval(df)
 ```
+
+\pagebreak
 
 # Klekota-Roth count
 
@@ -165,6 +186,8 @@ df <- input$KlekotaRoth_FingerprintCount
 plot_graph_interval(df)
 ```
 
+\pagebreak
+
 # 2D atom pairs
 
 ```{r, fig.width = 10, fig.height = 10, error = FALSE, message = FALSE, warning= FALSE}
@@ -172,6 +195,8 @@ input <- readRDS("data.Rds")
 df <- input$AtomPairs2D_fingerPrinter
 plot_graph_interval(df)
 ```
+
+\pagebreak
 
 # 2D atom pairs count
 
