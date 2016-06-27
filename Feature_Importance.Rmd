@@ -45,6 +45,7 @@ Generating the plot of feature importance
 ```{r, fig.width=10, fig.height=10, warning=FALSE, message=FALSE}
 input <- readRDS(file = "data.Rds")
 SubStructure_fingerPrintCount <- input$Substructure_fingerPrintCount
+set.seed(10)
 results_feature_importance_RF <- randomForest_feature_importance(SubStructure_fingerPrintCount)
 data1 <- data.frame(results_feature_importance_RF)
 data1 <- cbind(features = rownames(data1), data1)
