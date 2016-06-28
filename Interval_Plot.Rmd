@@ -1,5 +1,5 @@
 ---
-title: "Plot Interval Graph (Prediction Vs Observed inhibitory activies)"
+title: "Plot Interval Graph (Prediction Vs Observed inhibitory activities)"
 author: Saw Simeon, Nuttapat Anuwongcharoen, Watshara Shoombuatong, Aijaz Ahmad Malik,
   Virapong Prachayasittikul, Jarl E. S. Wikberg and Chanin Nantasenamat
 date: "June 16, 2016"
