@@ -1,0 +1,759 @@
+%%%%% Move below to the Supplementary Information:
+%%%%% Acidic Group Count Descriptors, ALOGP Descriptors, APol Descriptors, Aromatic Atoms Count Descriptor, AromaticBondsCountDescriptor, Atom Count Descriptor, Autocorrelation Descriptor, Barysz Matrix Descriptor, Basic Group Count Descriptor, BCUT Descriptor, PaDEL Bond Count Descriptor,  BPol Descriptor, Burden Modified Eigenvalues Descriptor, PaDEL Carbon Types Descriptor, Chi Chain Descriptor, Chi Cluster Descriptor, Chi Path Cluster Descriptor, PaDEL Chi Path Descriptor, Constitutional Descriptor, Crippen Descriptor, Detour Matrix Descriptor, Eccentric Connectivity Index Descriptor, Electrotopological State Atom Type Descriptor, Extended Topochemical Atom Descriptor, FMF Descriptor, PaDEL Fragment Complexity Descriptor, PaDEL HBondAcceptor Count Descriptor, PaDEL HBond Donor Count Descriptor, Hybridization Ratio Descriptor, Information Content Descriptor, Kappa Shape Indices Descriptor, Largest Chain Descriptor, Largest Pi System Descriptor, Longest Aliphatic Chain Descriptor, Mannhold LogP Descriptor, McGowanVolume descriptor, MDE Descriptor, MLFER Descriptor, Path Count Descriptor, Petijean Number Descriptor, Ring Count Descriptor, PaDEL Rotatable Bonds Count Descriptor, Rule Of Five Descriptor, Topological Descriptor, Topological Charge Descriptor, Topological Distance Matrix Descriptor, TPSA Descriptor, VABC Descriptor, VAdjMa Descriptor, Walk Count Descriptor, PaDEL Weight Descriptor, PaDEL Weighted Path Descriptor, Wiener Numbers Descriptor, XLogP Descriptor and Zagreb Index Descriptor. %%%%%%% 
+%%%%%yes, I think we will just used the substructure finterpring count descriptors
+
+
+\begin{sidewaystable}[!htbp]
+\caption{Summary of the predictive performance of PCM models of pIC$_{50}$ of aromatase after feature selection using random forest.}
+\label{performance_table_feature_selected_random_forest}
+\renewcommand{\arraystretch}{1.3}% Spread rows out...
+\begin{tabular}{llllllllllllllllllr}
+\hline
+%\cline{1-18}
+\multicolumn{1}{c}{Model} & \multicolumn{6}{c}{Number of descriptors} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{Training set} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{10--fold CV} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{External set} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{\multirow{2}{*}{$R^{2}$--$Q^{2}_{CV}$}} & \multicolumn{1}{c}{\multirow{2}{*}{$R^{2}$--$Q^{2}_{Ext}$}} \\ \cline{2-7} \cline{9-10} \cline{12-13} \cline{15-16}
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{C} & \multicolumn{1}{c}{P} & \multicolumn{1}{c}{C$\times$P} & \multicolumn{1}{c}{C$\times$C} & \multicolumn{1}{c}{P$\times$P} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$R^{2}$} & \multicolumn{1}{c}{$RMSE_{Tr}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Q^{2}$} & \multicolumn{1}{c}{$RMSE_{CV}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Q^{2}$} & \multicolumn{1}{c}{$RMSE_{Ext}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} \\ 
+\hline
+FinterPrinter & 13 & 0 & 0 & 0 & 0 & 13 &  & 0.8396$\pm$0.0259 & 0.6775$\pm$0.0618 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 &  0.00$\pm$0.00 &  & 0.01 & --0.06 \T\B \\
+ExtendedFingerprinter & 0 & 18 & 0 & 0 & 0 & 18 &  & 0.8411$\pm$0.0272 & 0.6796$\pm$0.0668 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+EStateFingerprinter & 13 & 18 & 234 & 0 & 153 & 418 &  & 0.5826$\pm$0.0252 & 1.125$\pm$0.0513 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+GraphOnlyFingerprinter & 0 & 0 & 234 & 0 & 0 & 234 &  & 0.7948$\pm$0.0276 & 0.7724$\pm$0.0605 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+MACCSFingerprinter & 0 & 0 & 0 & 78 & 0 & 78 &  & 0.8044$\pm$0.0221 & 0.7558$\pm$0.0499 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+PubchemFingerprinter & 0 & 0 & 0 & 0 & 153 & 153 &  & 0.8125$\pm$0.0245 & 0.7401$\pm$0.055 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+{\bf SubstructureFingerprinter} & {\bf 13} & {\bf 18} & {\bf 0} & {\bf 0} & {\bf 0} & {\bf 31} & {\bf } & 0.6965$\pm$0.0191 & 0.951$\pm$0.0381 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+SubstructureFingerprintCount & 13 & 18 & 234 & 0 & 0 & 165 &  & 0.833$\pm$0.0241 & 0.6978$\pm$0.0575 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+KlekotaRothFingerprinter & 13 & 18 & 0 & 78 & 0 & 109 &  & 0.8115$\pm$0.0246 & 0.7446$\pm$0.0557 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+KlekotaRothFingerprintCount & 13 & 18 & 0 & 0 & 153 & 184 &  & 0.8419$\pm$0.0243 & 0.6776$\pm$0.0593 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+{\bf AtomPairs2DFingerprinter} & {\bf 13} & {\bf 18} & {\bf 234} & {\bf 78} & {\bf 0} & {\bf 343} & {\bf } & 0.6797$\pm$0.0263 & 0.9855$\pm$0.0561 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+AtomPairs2DFingerprintCount & 13 & 18 & 0 & 78 & 153 & 262 &  & 0.8643$\pm$0.0256 & 0.6266$\pm$0.0649 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.10 & 0.10 \\
+
+\hline
+\end{tabular}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}[!htbp]
+\caption{Summary of the predictive performance of QSAR models of pIC$_{50}$ of Acetylcholinesterase using random forest.}
+\label{performance_random_forest}
+\renewcommand{\arraystretch}{1.3}% Spread rows out...
+\begin{tabular}{llllllllllllr}
+\hline
+%\cline{1-18}
+\multicolumn{1}{l}{Descriptors}  & \multicolumn{1}{c}{} & \multicolumn{2}{c}{Training set} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{10--fold CV} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{External set} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{\multirow{2}{*}{$R^{2}$--$Q^{2}_{CV}$}} & \multicolumn{1}{c}{\multirow{2}{*}{$R^{2}$--$Q^{2}_{Ext}$}} \\  \cline{9-10} \cline{6-7} \cline{3-4}
+\multicolumn{1}{c}{} &  \multicolumn{1}{c}{} & \multicolumn{1}{c}{$R^{2}$} & \multicolumn{1}{c}{$RMSE_{Tr}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Q^{2}$} & \multicolumn{1}{c}{$RMSE_{CV}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Q^{2}$} & \multicolumn{1}{c}{$RMSE_{Ext}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} \\ 
+\hline
+CDK fingerprint &    & 0.8396$\pm$0.0259 & 0.6775$\pm$0.0618 &  & 0.713$\pm$0.0862 & 0.9014$\pm$0.1799 &  & 0.7218$\pm$0.0549 &  0.8954$\pm$0.1118 &  & 0.01 & --0.06 \T\B \\
+CDK extended fingerprint &    & 0.8411$\pm$0.0272 & 0.6796$\pm$0.0668 &  & 0.7187$\pm$0.0946 & 0.8913$\pm$0.1952 &  & 0.7326$\pm$0.0565 & 0.8747$\pm$0.1176 &  & 0.10 & 0.10 \\
+EState fingerprint &   & 0.5826$\pm$0.0252 & 1.125$\pm$0.0513 &  & 0.5161$\pm$0.0725 & 1.1848$\pm$0.1315 &  & 0.5076$\pm$0.0505 & 1.1967$\pm$0.0967 &  & 0.10 & 0.10 \\
+CDK graph only fingerprint &   & 0.7948$\pm$0.0276 & 0.7724$\pm$0.0605 &  & 0.6581$\pm$0.0802 & 1.0003$\pm$0.1637 &  & 0.6745$\pm$0.0463 & 0.9695$\pm$0.1032 &  & 0.10 & 0.10 \\
+MACCS fingerprint &   & 0.8044$\pm$0.0221 & 0.7558$\pm$0.0499 &  & 0.6949$\pm$0.0686 & 0.9386$\pm$0.1628 &  & 0.6953$\pm$0.0636 & 0.9374$\pm$0.1232 &  & 0.10 & 0.10 \\
+Pubchem fingerprint &   & 0.8125$\pm$0.0245 & 0.7401$\pm$0.055 &  & 0.6924$\pm$0.0768 & 0.9434$\pm$0.1786 &  & 0.7006$\pm$0.0517 & 0.925$\pm$0.1029 &  & 0.10 & 0.10 \\
+Substructure fingerprint &   & 0.6965$\pm$0.0191 & 0.951$\pm$0.0381 &  & 0.6143$\pm$0.0746 & 1.0831$\pm$0.1611 &  & 0.6097$\pm$0.0494 & 1.0655$\pm$0.0996 &  & 0.10 & 0.10 \\
+Substructure fingerprint count &    & 0.833$\pm$0.0241 & 0.6978$\pm$0.0575 &  & 0.7001$\pm$0.0923 & 0.9279$\pm$0.1953 &  & 0.7214$\pm$0.0538 & 0.8957$\pm$0.1049 &  & 0.10 & 0.10 \\
+Klekota-Roth fingerprint &   & 0.8115$\pm$0.0246 & 0.7446$\pm$0.0557 &  & 0.6805$\pm$0.0808 & 0.9828$\pm$0.1805 &  & 0.6961$\pm$0.0558 & 0.9285$\pm$0.1151 &  & 0.10 & 0.10 \\
+Klekota-Roth fingerprint count &    & 0.8419$\pm$0.0243 & 0.6776$\pm$0.0593 &  & 0.6993$\pm$0.0998 & 0.9397$\pm$0.2072 &  & 0.7291$\pm$0.0505 & 0.8802$\pm$0.1036 &  & 0.10 & 0.10 \\
+2D atom pairs &   & 0.6797$\pm$0.0263 & 0.9855$\pm$0.0561 &  & 0.5484$\pm$0.0892 & 1.1459$\pm$0.1687 &  & 0.5592$\pm$0.0589 & 1.1377$\pm$0.1183 &  & 0.10 & 0.10 \\
+2D atom pairs count &   & 0.8643$\pm$0.0256 & 0.6266$\pm$0.0649 &  & 0.7098$\pm$0.0878 & 0.9051$\pm$0.1713 &  & 0.7171$\pm$0.0627 & 0.9084$\pm$0.1211 &  & 0.10 & 0.10 \\
+
+\hline
+\end{tabular}
+\end{sidewaystable}
+
+
+
+
+
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Tue Jan 12 17:33:37 2016
+\begin{table*}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & RMSE\_Mean & Rsquared\_Mean & RMSE\_SD & Rsquared\_SD \\ 
+  \hline
+Training & 0.70 & 0.83 & 0.06 & 0.02 \\ 
+  10-fold Cross Validation & 0.93 & 0.70 & 0.19 & 0.09 \\ 
+  Testing & 0.91 & 0.72 & 0.10 & 0.05 \\ 
+   \hline
+\end{tabular}
+\end{table*}
+
+
+
+\begin{sidewaystable}[!htbp]
+\caption{Summary of the predictive performance of QSAR models of pIC$_{50}$ of Acetylcholinesterase using random forest.}
+\label{performance_random_forest}
+\renewcommand{\arraystretch}{1.3}% Spread rows out...
+\begin{tabular}{lllllllllllcc}
+\hline
+%\cline{1-18}
+\multicolumn{1}{l}{Descriptors}  & \multicolumn{1}{c}{} & \multicolumn{2}{c}{Training set} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{10--fold CV} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{External set} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{\multirow{2}{*}{$R^{2}$--$Q^{2}_{CV}$}} & \multicolumn{1}{c}{\multirow{2}{*}{$R^{2}$--$Q^{2}_{Ext}$}} \\  \cline{9-10} \cline{6-7} \cline{3-4}
+\multicolumn{1}{c}{} &  \multicolumn{1}{c}{} & \multicolumn{1}{c}{$R^{2}$} & \multicolumn{1}{c}{$RMSE_{Tr}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Q^{2}$} & \multicolumn{1}{c}{$RMSE_{CV}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Q^{2}$} & \multicolumn{1}{c}{$RMSE_{Ext}$} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} \\ 
+\hline
+CDK fingerprint &    & 0.84$\pm$0.03 & 0.68$\pm$0.06 &  & 0.71$\pm$0.09 & 0.90$\pm$0.18 &  & 0.72$\pm$0.06 &  0.90$\pm$0.11 &  & 0.13 & 0.12 \T \\
+CDK extended fingerprint &    & 0.84$\pm$0.03 & 0.68$\pm$0.07 &  & 0.72$\pm$0.09 & 0.89$\pm$0.20 &  & 0.73$\pm$0.06 & 0.87$\pm$0.12 &  & 0.12 & 0.11 \\
+EState fingerprint &   & 0.58$\pm$0.03 & 1.13$\pm$0.05 &  & 0.52$\pm$0.07 & 1.18$\pm$0.13 &  & 0.51$\pm$0.05 & 1.20$\pm$0.10 &  & 0.06 & 0.07 \\
+CDK graph only fingerprint &   & 0.79$\pm$0.03 & 0.77$\pm$0.06 &  & 0.66$\pm$0.08 & 1.00$\pm$0.16 &  & 0.67$\pm$0.05 & 0.97$\pm$0.10 &  & 0.13 & 0.12 \\
+MACCS fingerprint &   & 0.80$\pm$0.02 & 0.76$\pm$0.05 &  & 0.69$\pm$0.07 & 0.94$\pm$0.16 &  & 0.70$\pm$0.06 & 0.94$\pm$0.12 &  & 0.11 & 0.10 \\
+Pubchem fingerprint &   & 0.81$\pm$0.02 & 0.74$\pm$0.05 &  & 0.69$\pm$0.08 & 0.94$\pm$0.18 &  & 0.70$\pm$0.05 & 0.93$\pm$0.10 &  & 0.12 & 0.11 \\
+Substructure fingerprint &   & 0.70$\pm$0.02 & 0.95$\pm$0.04 &  & 0.61$\pm$0.07 & 1.08$\pm$0.16 &  & 0.61$\pm$0.05 & 1.07$\pm$0.10 &  & 0.09 & 0.09 \\
+Substructure fingerprint count &    & 0.83$\pm$0.02 & 0.70$\pm$0.06 &  & 0.70$\pm$0.09 & 0.93$\pm$0.20 &  & 0.72$\pm$0.05 & 0.90$\pm$0.11 &  & 0.13 & 0.11 \\
+Klekota-Roth fingerprint &   & 0.81$\pm$0.02 & 0.74$\pm$0.06 &  & 0.68$\pm$0.08 & 0.98$\pm$0.18 &  & 0.70$\pm$0.06 & 0.93$\pm$0.12 &  & 0.13 & 0.11 \\
+Klekota-Roth fingerprint count &    & 0.84$\pm$0.02 & 0.68$\pm$0.06 &  & 0.70$\pm$0.10 & 0.94$\pm$0.21 &  & 0.73$\pm$0.05 & 0.88$\pm$0.10 &  & 0.14 & 0.11 \\
+2D atom pairs &   & 0.68$\pm$0.03 & 0.99$\pm$0.06 &  & 0.55$\pm$0.09 & 1.15$\pm$0.17 &  & 0.56$\pm$0.059 & 1.14$\pm$0.12 &  & 0.13 & 0.12 \\
+2D atom pairs count &   & 0.86$\pm$0.03 & 0.63$\pm$0.06 &  & 0.71$\pm$0.09 & 0.91$\pm$0.17 &  & 0.71$\pm$0.06 & 0.91$\pm$0.12 &  & 0.15 & 0.15 \B \\
+
+\hline
+\end{tabular}
+\end{sidewaystable}
+
+
+
+
+%%%%%
+%%%%%  Models (without feature selection)
+%%%%%
+%%%%%
+%%%%%
+
+\begin{sidewaystable}[!t]
+\centering
+\caption{Performance summary of QSAR classification models for predicting the bioactivity class toward acetylcholinesterase (without feature selection).}
+\label{Table_Performance_full}
+\renewcommand{\arraystretch}{1.4}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llllllllllllllll}
+\hline
+\textbf{Descriptor class} & \textbf{\textit{N}} & \multicolumn{4}{c}{\textbf{Training set}} &  & \multicolumn{4}{c}{\textbf{10--fold CV}} &  & \multicolumn{4}{c}{\textbf{External set}} \T\B \\ \cline{3-6} \cline{8-11} \cline{13-16}
+ &  &  \multicolumn{1}{c}{\textbf{Acc (\%)}} & \multicolumn{1}{c}{\textbf{Sen (\%)}} & \multicolumn{1}{c}{\textbf{Spec (\%)}} & \multicolumn{1}{c}{\textbf{MCC}} & \textbf{} & \multicolumn{1}{c}{\textbf{Acc (\%)}} & \multicolumn{1}{c}{\textbf{Sen (\%)}} & \multicolumn{1}{c}{\textbf{Spec (\%)}} & \multicolumn{1}{c}{\textbf{MCC}} & \textbf{} & \multicolumn{1}{c}{\textbf{Acc (\%)}} & \multicolumn{1}{c}{\textbf{Sen (\%)}} & \multicolumn{1}{c}{\textbf{Spec (\%)}} & \multicolumn{1}{c}{\textbf{MCC}} \T\B \\ \hline
+% \textbf{Single--target} & &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+CDK fingerprint & 1012 & 98.31$\pm$0.19 & 97.49$\pm$0.43 & 98.95$\pm$0.26 & 0.97$\pm$0.00 &  & 88.95$\pm$0.50 & 86.78$\pm$0.72 & 90.61$\pm$0.60 & 0.77$\pm$0.01 &  & 89.33$\pm$1.34 & 87.53$\pm$2.27 & 90.72$\pm$1.91 & 0.78$\pm$0.03 \T \\
+CDK extended fingerprint & 993 & 98.33$\pm$0.18 & 97.50$\pm$0.41 & 98.98$\pm$0.24 & 0.97$\pm$0.00 &  & 89.02$\pm$0.51 & 87.09$\pm$0.83 & 90.52$\pm$0.60 & 0.78$\pm$0.01 &  & 89.10$\pm$1.33 & 87.59$\pm$2.27 & 90.28$\pm$1.77 & 0.78$\pm$0.03 \\
+EState fingerprint & 23 & 87.80$\pm$0.68 & 87.22$\pm$1.19 & 88.46$\pm$1.44 & 0.76$\pm$0.01 &  & 64.70$\pm$1.49 & 66.86$\pm$1.62 & 62.22$\pm$2.38 & 0.29$\pm$0.03 &  & 65.62$\pm$3.17 & 67.49$\pm$5.14 & 63.46$\pm$5.61 & 0.31$\pm$0.06 \\
+CDK graph only fingerprint & 437 & 96.43$\pm$0.27 & 95.20$\pm$0.67 & 97.51$\pm$0.47 & 0.93$\pm$0.01 &  & 82.75$\pm$0.70 & 78.63$\pm$0.98 & 86.38$\pm$0.94 & 0.65$\pm$0.01 &  & 83.24$\pm$1.88 & 79.46$\pm$3.30 & 86.56$\pm$2.55 & 0.66$\pm$0.04 \\ %\hline
+% \textbf{Multi--target} & &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+MACCS fingerprint & 107 & 96.83$\pm$0.25 & 95.86$\pm$0.47 & 97.67$\pm$0.39 & 0.94$\pm$0.01 & & 85.82$\pm$0.67 & 82.88$\pm$1.05 & 88.37$\pm$0.81 & 0.71$\pm$0.01 & & 86.40$\pm$1.62 & 83.80$\pm$2.99 & 88.64$\pm$2.26 & 0.73$\pm$0.03 \\ %\hline
+% \textbf{Combine--target} &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+PubChem fingerprint & 314 & 96.84$\pm$0.23 & 95.64$\pm$0.45 & 97.84$\pm$0.38 & 0.94$\pm$0.00 & & 86.17$\pm$0.61 & 82.72$\pm$0.90 & 89.07$\pm$0.80 & 0.72$\pm$0.01 & & 86.67$\pm$1.54 & 83.28$\pm$2.81 & 89.53$\pm$2.18 & 0.73$\pm$0.03 \\
+Substructure fingerprint & 36 & 90.38$\pm$0.54 & 89.82$\pm$0.93 & 90.92$\pm$0.92 & 0.81$\pm$0.01 & & 70.70$\pm$1.19 & 70.04$\pm$1.72 & 71.33$\pm$1.47 & 0.41$\pm$0.02 & & 71.13$\pm$2.64 & 70.66$\pm$4.26 & 71.57$\pm$4.18 & 0.42$\pm$0.05 \\
+Substructure fingerprint count & 34 & 97.69$\pm$0.20 & 96.69$\pm$0.44 & 98.46$\pm$0.34 & 0.95$\pm$0.00 & & 85.44$\pm$0.60 & 81.99$\pm$0.92 & 88.09$\pm$0.66 & 0.70$\pm$0.01 & & 85.46$\pm$1.68 & 82.35$\pm$2.88 & 87.85$\pm$2.38 & 0.70$\pm$0.03 \\
+Klekota-Roth fingerprint & 227 & 97.13$\pm$0.21 & 96.10$\pm$0.47 & 97.94$\pm$0.34 & 0.94$\pm$0.00 & & 87.05$\pm$0.62 & 86.13$\pm$0.83 & 87.77$\pm$0.74 & 0.74$\pm$0.01 & & 87.29$\pm$1.62 & 86.30$\pm$2.57 & 88.06$\pm$2.16 & 0.74$\pm$0.03 \\
+Klekota-Roth fingerprint count & 179 & 97.84$\pm$0.21 & 96.78$\pm$0.42 & 98.62$\pm$0.29 & 0.96$\pm$0.00 & & 88.11$\pm$0.47 & 85.77$\pm$0.75 & 89.83$\pm$0.56 & 0.76$\pm$0.01 & & 88.35$\pm$1.60 & 86.40$\pm$2.67 & 89.78$\pm$2.27 & 0.76$\pm$0.03 \\
+2D atom pairs & 91 & 92.76$\pm$0.47 & 90.28$\pm$0.85 & 94.82$\pm$0.67 & 0.85$\pm$0.01 & & 74.46$\pm$0.90 & 67.09$\pm$1.32 & 80.62$\pm$1.04 & 0.48$\pm$0.02 & & 74.68$\pm$2.27 & 67.06$\pm$4.25 & 81.06$\pm$3.08 & 0.49$\pm$0.05 \\
+2D atom pairs count & 76 & 98.60$\pm$0.18 & 97.79$\pm$0.38 & 99.20$\pm$0.26 & 0.97$\pm$0.00 & & 84.87$\pm$0.64 & 80.32$\pm$0.97 & 88.27$\pm$0.70 & 0.69$\pm$0.01 & &  85.29$\pm$1.53 & 81.03$\pm$2.78 & 88.46$\pm$1.93 & 0.70$\pm$0.03 \B \\
+\hline
+\end{tabular}
+}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}[!t]
+\caption{Performance summary of QSAR regression models for predicting pIC$_{50}$ against acetylcholinesterase (without feature selection).}
+\label{performance_random_forest}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{8.5pt} % Adjusts column spacing %
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{CV}$}} & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{Ext}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$R^{2}$} & \textbf{$RMSE_{Tr}$} &  & \textbf{$Q^{2}$} & \textbf{$RMSE_{CV}$} &  & \textbf{$Q^{2}$} & \textbf{$RMSE_{Ext}$} &  &  &  \T\B \\ 
+\hline
+CDK fingerprint & 1012  & 0.84$\pm$0.03 & 0.68$\pm$0.06 &  & 0.71$\pm$0.09 & 0.90$\pm$0.18 &  & 0.72$\pm$0.06 &  0.90$\pm$0.11 &  & 0.13 & 0.12 \T \\
+CDK extended fingerprint & 993  & 0.84$\pm$0.03 & 0.68$\pm$0.07 &  & 0.72$\pm$0.09 & 0.89$\pm$0.20 &  & 0.73$\pm$0.06 & 0.87$\pm$0.12 &  & 0.12 & 0.11 \\
+EState fingerprint & 23  & 0.58$\pm$0.03 & 1.13$\pm$0.05 &  & 0.52$\pm$0.07 & 1.18$\pm$0.13 &  & 0.51$\pm$0.05 & 1.20$\pm$0.10 &  & 0.06 & 0.07 \\
+CDK graph only fingerprint & 437  & 0.79$\pm$0.03 & 0.77$\pm$0.06 &  & 0.66$\pm$0.08 & 1.00$\pm$0.16 &  & 0.67$\pm$0.05 & 0.97$\pm$0.10 &  & 0.13 & 0.12 \\
+MACCS fingerprint & 107  & 0.80$\pm$0.02 & 0.76$\pm$0.05 &  & 0.69$\pm$0.07 & 0.94$\pm$0.16 &  & 0.70$\pm$0.06 & 0.94$\pm$0.12 &  & 0.11 & 0.10 \\
+PubChem fingerprint & 314  & 0.81$\pm$0.02 & 0.74$\pm$0.05 &  & 0.69$\pm$0.08 & 0.94$\pm$0.18 &  & 0.70$\pm$0.05 & 0.93$\pm$0.10 &  & 0.12 & 0.11 \\
+Substructure fingerprint & 36  & 0.70$\pm$0.02 & 0.95$\pm$0.04 &  & 0.61$\pm$0.07 & 1.08$\pm$0.16 &  & 0.61$\pm$0.05 & 1.07$\pm$0.10 &  & 0.09 & 0.09 \\
+Substructure fingerprint count & 34  & 0.83$\pm$0.02 & 0.70$\pm$0.06 &  & 0.70$\pm$0.09 & 0.93$\pm$0.20 &  & 0.72$\pm$0.05 & 0.90$\pm$0.11 &  & 0.13 & 0.11 \\
+Klekota-Roth fingerprint & 227 & 0.81$\pm$0.02 & 0.74$\pm$0.06 &  & 0.68$\pm$0.08 & 0.98$\pm$0.18 &  & 0.70$\pm$0.06 & 0.93$\pm$0.12 &  & 0.13 & 0.11 \\
+Klekota-Roth fingerprint count & 179 & 0.84$\pm$0.02 & 0.68$\pm$0.06 &  & 0.70$\pm$0.10 & 0.94$\pm$0.21 &  & 0.73$\pm$0.05 & 0.88$\pm$0.10 &  & 0.14 & 0.11 \\
+2D atom pairs & 91  & 0.68$\pm$0.03 & 0.99$\pm$0.06 &  & 0.55$\pm$0.09 & 1.15$\pm$0.17 &  & 0.56$\pm$0.06 & 1.14$\pm$0.12 &  & 0.13 & 0.12 \\
+2D atom pairs count & 76 & 0.86$\pm$0.03 & 0.63$\pm$0.06 &  & 0.71$\pm$0.09 & 0.91$\pm$0.17 &  & 0.71$\pm$0.06 & 0.91$\pm$0.12 &  & 0.15 & 0.15 \B \\
+\hline
+\end{tabular}
+}
+\end{sidewaystable}
+
+
+
+
+
+
+The top 10 ranking feature was SubFPC2 (Secondary carbon), SubFPC307 (chiral center specified), SubFPC302 (rotatable bond), SubFPC301 (1,5-Tautomerizable), SubFPC300 (1,3-Tautomerizable), SubFPC295 (C ONS bond), SubFPC274 (Aromatic), SubFPC32 (Secondary mixed amine), SubFPC275 (Heterocyclic) and SubFPC3 (Tertiary carbon). 
+
+
+In conclusion, the differences in performance can be explained from the characterization of acetylcholinesterase inhibitors by each finger print descriptors. 
+
+
+The top 10 ranking feature was SubFPC2 (Secondary carbon), SubFPC307 (chiral center specified), SubFPC302 (rotatable bond), SubFPC301 (1,5-Tautomerizable), SubFPC300 (1,3-Tautomerizable), SubFPC295 (C ONS bond), SubFPC274 (Aromatic), SubFPC32 (Secondary mixed amine), SubFPC275 (Heterocyclic) and SubFPC3 (Tertiary carbon). 
+
+
+Y-scrambling test was used to ensure the robustness of the predictive model not only to rule out the possibility of chance correlations but also to assess the statistical significance of \textit{R}$^2$ and \textit{Q}$^2$, ensuring the generalizability of QSAR model. The true Y-dependent variable (i.e., pIC$_{50}$) is randomly scrambled and the statistical assessment parameters are recalculated.
+
+
+
+Model validation is an important process, which should be performed to ensure that a fitted model can accurately predict responses for future or unknown subjects. Without validation, we might train models that over-fit in the training data. 
+
+As for regression, two statistical parameters were used, which are Pearson's correlation coefficient (\textit{r}) and Root Mean Square Error (RMSE). The \textit{r} is a commonly used parameters to represent the degree of relationship between two variable of interest. Generally, the \textit{r} values can range from --1 to +1 in which negative values are indicative of negative correlation between two variables and vice versa. RMSE is a commonly used parameter to assess the relative error of the predictive model. The predictive performance of the regression model was verified by 10-fold cross-validation, external validation and Y-scrambling test. 
+
+As for classification, accuracy (Acc), sensitivity (Sen), specificity (Spec) and Matthew’s Correlation Coefficients (MCC) on both independent test sets. Acc is the percentage of correctly classified instances which can be calculated with the equation:
+%
+\begin{equation} Acc = \frac{TP + TN}{(TP + TN + FP +
+FN)}\times100 \label{eq:acc} \end{equation}
+\begin{equation} Sen = \frac{TP}{(TP+ FN)}\times100
+\label{eq:sen} \end{equation}
+\begin{equation} Spec = \frac{TN}{(TN+ FP)}\times100
+\label{eq:spec} \end{equation}
+\begin{equation} MCC = \frac{TP\times TN  - FP\times
+FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}} \label{eq:mcc} \end{equation}
+%
+where TP is the instances of true positives, TN is the instances of true negatives, FP is the instances of false positives and FN is the instance of false negatives. The range of MCC is from --1 to 1 in which a value of MCC = 1 indicates the best possible prediction while MCC = --1 indicates the worst possible prediction. On the other hand, MCC = 0 suggests a random prediction scheme. 
+
+
+The 10-fold cross-validation technique does not used the entire data set to build predictive model. Instead, it splits the data into training and testing data set by allowing model that is built with training  data set us allow to assess the performance of the model on the testing data set. By performing repeats of the 10-fold validation, the average  accuracies can be used to truly assess the performance of the predictive model. 
+
+
+Y-scrambling test was used to ensure the robustness of the predictive model not only to rule out the possibility of chance correlations but also to assess the statistical significance of \textit{R}$^2$ and \textit{Q}$^2$, ensuring the generalizability of QSAR model. The true Y-dependent variable (i.e., pIC$_{50}$) is randomly scrambled and the statistical assessment parameters are recalculated.
+
+
+Alzheimer's disease (AD) is a chronic neurodegenerative disease which leads to gradual loss of neuronal cells. Acetylcholinesterase is an enzyme that catalyzes the breakdown of the neurotransmitter, acetylcholine. A data set comprising 9,242 bioactivity data points on acetylcholinestarse inhibitory activity along with their corresponding structures in SMILES codes notation was obtained from the ChEMBL database. Acetylcholinesterase inhibitors were described by a set of 12 fingerprint descriptors and predictive models were constructed \textcolor{blue}{from 100 different data splits} using random forest. \textcolor{blue}{The generated models afforded $R^2$ values in the range of 0.58--0.84 for the training set, $Q^2$ values in the range of 0.52--0.72 for the 10-fold cross-validated set and $Q^2$ values in the range of 0.51--0.0.73 for the external set. Conformal prediction was applied to evaluate the reliability of predictions} \hl{as well as Y-scrambling to rule out the chance of correlation
+
+[aside from prediction reliability what else does it evaluate? we put that here, also, insert here the results].} A thorough analysis of substructure fingerprint count was conducted to provide informative insights on the inhibitory activity of acetylcholinesterase inhibitors. This may be used as guidelines in the design of novel acetylcholinesterase inhibitors.
+
+\subsection{Conformal prediction}
+
+Conformal prediction was utilized in QSAR modelling framework to provide confidence interval for the individual predictions. It can be observed that the combination of random forest and conformal prediction estimates the inhibitory properties of acetylcholinesterase inhibitors as a pIC$_{50}$ region associated to a user-defined confidence level (i.e., 0.8), which represents an easy and interpretable estimate of the reliability of individual predictions. To compare the results of different descriptor sets, predictions were plot on test data with prediction errors. As seen in Figure \ref{fig:conformal}, the individual confidence intervals from Kelkota-Roth fingerprint descriptor set provide more slightly compact confident prediction intervals when compared to others.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width = \linewidth]{Fig_Conformal.pdf}
+\caption{Plot of experimental verus predicted pIC$_{50}$ values for the external set along with individual confidence intervals (A) CDK fingerprint, (B) CDK extended fingerprint, (C) EState fingerprint, (D) CDK graph only fingerprint, (E) MACCS fingerprint, (F) PubChem fingerprint, (G) Substructure fingerprint, (H) Substructure fingerprint count, (I) Klekota-Roth fingerprint, (J) Klekota-Roth fingerprint count, (K) 2D atom pairs and (L) 2D atom pairs count.} 
+\label{fig:conformal} 
+\end{figure}
+
+
+
+
+\FloatBarrier
+
+
+\subsection{Conformal prediction}
+
+
+
+Applicability domain (AD) can be defined as the region of descriptor space in which a QSAR model can be reliably applied. The goal of AD is to determine whether the model assumption can be made to assess the credibility of the QSAR predictions. Although, there is not a single generally accepted method for determining the AD, conformal prediction is an algorithm-independent method which works with any machine learners. The \textit{ErrorModel} function from the R package \textit{conformal} was used to calculate error mode from training set using point prediction model. The \textit{CalculateAlphas} function was used to calculate the vector of nonconformity scores (strangeness) for samples in the training set. The \textit{GetConfidenceIntervals} function was used to calculate confidence intervals for individual prediction in the conformal prediction framework \cite{cortes2015prediction}. 
+
+
+
+\subsection{Principal component analysis}
+
+
+Principal component analysis is a commonly used data reduction technique that finds the linear combination of predictors known as principal component (PC). The objective of PCA is to interpret the data in a much meaningful structure with the help of orthogonal transformations. The intention of linear transformation is to reveal the hidden internal structure of the data set with the arbitrarily designed in the data space. In other words, new variables were computed from the original data in which the new variables include the variance of the original variables in decreasing order. The variance provide an informatic overview that can be of a great help when identifying the underlying structure of the variables. Prior to performing the PCA, the descriptors are scaled and centered to obtain the same unit variance. The \textit{prcomp} function along with argument of \textit{center} and \textit{scale.} (set at TRUE) was used to perform PCA. There are two features of PCA that are highly useful, which are scores and loadings. To identify the variation between the samples, the \textit{kmeans} function was utilized towards the score of the PCA with 95 percent of confidence internal to obtain the \textit{K}-mean clusters. The graphical plot was made using the ggplot function from the R package \textit{ggplot2}. Finally, the produced plots were arranged with \textit{plotbind} function from the R package \textit{cowplot}. 
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width = 0.91\linewidth]{Fig_Scrambling_Acetalcholinesterase.pdf}
+\caption{Plot of Y-scrambled models using CDK fingerprint (A), CDK extended fingerprint (B), EState fingerprint (C), CDK graph only fingerprint (D), MACCS fingerprint (E), PubChem fingerprint (F), substructure fingerprint (G), substructure fingerprint count (H), Klekota-Roth fingerprint (I), Klekota-Roth fingerprint count (J), 2D atom pairs (K) and 2D atom pairs count (L).} 
+\label{fig:scrambling_plot} 
+\end{figure}
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width = \linewidth]{Fig_Importance.pdf}
+\caption{Plot of feature importance as exemplified by the Gini index for regression.} 
+\label{fig:importance}
+\end{figure}
+
+
+%%% Deleted Feb 28, 2016 @ 21.26
+% Following sentences were redundant as it was repeated 3 times, first in the Data collection section and the 2 sections mentioned below
+%
+% Deleted from Chemical space section
+Compounds were binned to three bioactivity classes (e.g. active, intermediate and inactive) using the following cut-offs: compounds were classified as active when the pIC$_{50}$ values are above 6 (corresponding to IC$_{50}$ value less than or equal to 1 $\mu$M) and classified as inactive for those having values (i.e., pIC$_{50}$) below 5 (corresponding to IC$_{50}$ value greater than or equal to 10 $\mu$M). Those in between pIC$_{50}$ of 5 and 6 are denoted as intermediate.
+%
+% Deleted from Classification section
+following cut-offs: compounds are classified as active when the pIC$_{50}$ values are above 6 (corresponding to IC$_{50}$ $\leq$ 1 $\mu$M) and classified as inactive when pIC$_{50}$ values are below 5 (corresponding to IC$_{50}$ $\geq$ 10 uM). Those in between pIC$_{50}$ of 5 and 6 are denoted as intermediate. Compounds classified as intermediate were removed prior when building classification models. Two predictive models were built, one with full data set and one with 0.7 correlation cutoff. 
+
+
+
+
+\subsection{Reproducible research}
+
+For the benefit of reproducibility of this research, the R code producing the result tables and plots described in this work are publicly available on figshare at \hl{http://url}. 
+
+
+
+
+
+
+
+
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width = \linewidth]{Fig_K_mean.pdf}
+%\caption{Clusters plot of actives from the original data set as a gray filled sphere whereas 50 selected centroid as a red filled sphere} 
+%\label{fig:K-mean}
+%\end{figure}
+
+
+
+
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width = \linewidth]{Kennard_Stone_50.pdf}
+%\caption{Clusters plot of actives from the original data set as a gray filled sphere whereas 50 selected test set data as a red filled sphere} 
+%\label{fig:K-mean}
+%\end{figure}
+
+
+
+
+
+
+
+As seen in Fig. \ref{fig:importance}, for the classification the top 10 features were rotatable bond (SubFPC302), chiral center specified (SubFPC307), 1,5-Tautomerizable (SubFPC301), 1,3-Tautomerizable (SubFPC300), secondary carbon (SubFPC2), aromatic (SubFPC274), C ONS bond (SubFPC295), heterocylic  (SubFPC275), tertiary carbon (SubFPC3) and primary carbon (SubFPC1).  
+
+The top feature is rotatable bond (SubFPC302), which is a parameter for the guidelines for determining the lead compounds, is the most important feature in AChE inhibitors, as seen in Fig. \ref{fig:importance}. 
+
+
+
+
+
+
+% Feature importance
+
+% Secondary carbon
+The carbon atoms are basic constituents on the basic forms of life. Organic compounds obtained either from natural and synthetic manner are a major therapeutic agents which has been utilized for the treatment of various diseases. Base from the feature importance analysis, the position of the carbon compound may play a role in relating AChE inhibitory properties. 
+
+
+
+
+
+
+%%
+@article{lin2005probing,
+  title={Probing the peripheral anionic site of acetylcholinesterase with quantitative structure activity relationships for inhibition by biphenyl-4-acyoxylate-4′-N-Butylcarbamates},
+  author={Lin, Gialih and Chen, Gan-Hong and Yeh, Shih-Chieh and Lu, Chun-Ping},
+  journal={Journal of biochemical and molecular toxicology},
+  volume={19},
+  number={4},
+  pages={234--243},
+  doi = {10.1002/jbt.20087}, 
+  year={2005},
+  publisher={Wiley Online Library}
+}
+
+@article{roy2008investigation,
+  title={An investigation of structurally diverse carbamates for acetylcholinesterase (AChE) inhibition using 3D-QSAR analysis},
+  author={Roy, Kuldeep K and Dixit, Anshuman and Saxena, Anil K},
+  journal={Journal of Molecular Graphics and Modelling},
+  volume={27},
+  number={2},
+  pages={197--208},
+  doi = {10.1016/j.jmgm.2008.04.006}, 
+  year={2008},
+  publisher={Elsevier}
+}
+
+@article{chaudhaery2009consensus,
+  title={Consensus superiority of the pharmacophore-based alignment, over maximum common substructure (MCS): 3D-QSAR studies on carbamates as acetylcholinesterase inhibitors},
+  author={Chaudhaery, Shailendra S and Roy, Kuldeep K and Saxena, Anil K},
+  journal={Journal of chemical information and modeling},
+  volume={49},
+  number={6},
+  pages={1590--1601},
+  doi = {10.1021/ci900049e}, 
+  year={2009},
+  publisher={ACS Publications}
+}
+
+
+@article{recanatini2000sar,
+  title={SAR of 9-amino-1, 2, 3, 4-tetrahydroacridine-based acetylcholinesterase inhibitors: synthesis, enzyme inhibitory activity, QSAR, and structure-based CoMFA of tacrine analogues},
+  author={Recanatini, Maurizio and Cavalli, Andrea and Belluti, Federica and Piazzi, Lorna and Rampa, Angela and Bisi, Alessandra and Gobbi, Silvia and Valenti, Piero and Andrisano, Vincenza and Bartolini, Manuela and others},
+  journal={Journal of medicinal chemistry},
+  volume={43},
+  number={10},
+  doi = {10.1021/jm990971t}, 
+  pages={2007--2018},
+  year={2000},
+  publisher={ACS Publications}
+}
+
+@article{akula20063d,
+  title={3D QSAR studies of AChE inhibitors based on molecular docking scores and CoMFA},
+  author={Akula, Nagaraju and Lecanu, Laurent and Greeson, Janet and Papadopoulos, Vassilios},
+  journal={Bioorganic \& medicinal chemistry letters},
+  volume={16},
+  number={24},
+  pages={6277--6280},
+  doi = {10.1016/j.bmcl.2006.09.030}, 
+  year={2006},
+  publisher={Elsevier}
+}
+
+@article{fernandez2006modeling,
+  title={Modeling of acetylcholinesterase inhibition by tacrine analogues using Bayesian-regularized Genetic Neural Networks and ensemble averaging},
+  author={Fern{\'a}ndez, Michael and Carreiras, M Carmo and Marco, Jos{\'e} L and Caballero, Julio},
+  journal={Journal of enzyme inhibition and medicinal chemistry},
+  volume={21},
+  number={6},
+  pages={647--661},
+  doi = {10.1080/14756360600862366}, 
+  year={2006},
+  publisher={Taylor \& Francis}
+}
+
+@article{asadabadi2009combinatorial,
+  title={A combinatorial feature selection approach to describe the QSAR of dual site inhibitors of acetylcholinesterase},
+  author={Asadabadi, Ebrahim Barzegari and Abdolmaleki, Parviz and Barkooie, Seyyed Mohsen Hosseini and Jahandideh, Samad and Rezaei, Mohammad Ali},
+  journal={Computers in biology and medicine},
+  volume={39},
+  number={12},
+  pages={1089--1095},
+  doi = {10.1016/j.compbiomed.2009.09.003}, 
+  year={2009},
+  publisher={Elsevier}
+}
+
+
+\cite{recanatini1997comparative} used 3 categories of AChE inhibitors, which are, physostigmine analogues, 1,2,3,4-tetrahydroacridines and benzylamines, to perform QSAR and concluded that hydrophobicity of physostigmine and the benzylamine-derived classes, electronic effects of benzylamine derivatives play an important role in predicting the activity of AChE inhibitors. \cite{lin2005probing} probed the pheripheral anionic site of AChE by utilized QSAR in which pseudosubstrate inhibitors were correlated with pK\textit{i}, log k\textit{c} and log k\textit{i} value. \cite{roy2008investigation} used 3D-QSAR to identify the important structural features and physiocochemical properties of AChE inhibitors and claimed that steric, electrostatic and hydrophobic interaction are important for predicting binding affinity. \cite{chaudhaery2009consensus} similarly performed 3D-QSAR to reveal that steric, electrostatic and hydrophobicity of AChE inhibitors are essential in modulation of inhibitory properties. \cite{recanatini2000sar} performed QSAR of AChE inhibitors, tacrine, a drug used for the treatment of the Alzheimer's disease, in particular, to claim that results of 3D-QSAR, QSAR and experimental determination of pIC\textit{50} are comparable.  \cite{akula20063d} studied 3D-QSAR of AChE inhibitors, based on molecular docking scores as molecular descriptors to correlate with their respective pIC\textit{50} of a serties of 19 bis-tacrine structures. \cite{fernandez2006modeling} modeled a series of 136 tacrine analogues via ensemble machine learners to predict their pIC\textit{50} where test set \textit{R} values of 0.851. \cite{asadabadi2009combinatorial} used QSAR using nonlinear artificial neural networks (ANNs) method accompanied via feature selection to describe the binding affinity of the dual binding site AChE inhibitors. 
+
+
+
+
+
+%%%%% Y-scrambling
+The scatter plots of \textit{R}$^2$ versus \textit{Q}$^2$ for the Y-scrambled pairs of pIC$_{50}$ are shown in (supplementary data) %%\ref{fig:scrambling_plot}. 
+
+
+maintaining the homeostasis of neurotransmitters
+
+%%%%%%%%%%%%%%% Regression model
+For the training set, as seen in Table~\ref{performance_random_forest}, the top performing model was from the 2D atom pairs count (RMSE = 0.63$\pm$0.06 and $R^{2}$ = 0.86$\pm$0.03) followed by Klekota-Roth fingerprint count (RMSE = 0.68$\pm$0.06 and $R^{2}$ = 0.84$\pm$0.02), CDK fingerprint (RMSE = 0.68$\pm$0.06 and $R^{2}$ = 0.84$\pm$0.03) and CDK extended fingerprint (RMSE = 0.68$\pm$0.07 and $R^{2}$ = 0.84$\pm$0.03) whereas lowest performing model was from EState fingerprint (RMSE = 1.13$\pm$0.05 and $R^{2}$ = 0.58$\pm$0.03). 
+
+In Table~\ref{performance_random_forest}, for the 10-fold CV, the worst performing model was obtained from EState fingerprint (RMSE = 1.18$\pm$0.13 and $Q^{2}$ = 0.52$\pm$0.07) followed by (RMSE = 1.15$\pm$0.17 and $Q^{2}$ = 0.55$\pm$0.09) whereas the top performing model was from CDK extended fingerprint (RMSE = 0.89$\pm$0.20 and $Q^{2}$ = 0.72$\pm$0.09). 
+
+The results of this validation on the test set is shown in Table~\ref{performance_random_forest}. It can be observed that all fingerprint descriptors are capable of capturing inhibitory activity space of AChE inhibitors as all have $Q^{2}$ of higher than 0.50, which is a acceptable validation performance of the QSAR models \citep{golbraikh2002beware}. Interestingly, the two best performing descriptor set were CDK extended fingerprint (RMSE = 0.87$\pm$0.12 and $Q^{2}$ = 0.73$\pm$0.06) and Klekota-Roth fingerprint count (RMSE = 0.73$\pm$0.05 and $Q^{2}$ = 0.73$\pm$0.05), closely followed by the Substructure fingerprint count (RMSE = 0.90$\pm$0.11 and $Q^{2}$ = 0.72$\pm$0.05) and the CDK fingerprint (RMSE = 0.90$\pm$0.11 and $Q^{2}$ = 0.72$\pm$0.06). The worst performing descriptor set is Estate fingerprint (RMSE = 1.20$\pm$0.10 and $Q^{2}$ = 0.51$\pm$0.05) followed by 2D atom pairs (RMSE = 1.14$\pm$0.12 and $Q^{2}$ = 0.56$\pm$0.06), which may be because these type of fingerprint descriptors do not capture the different degrees of similarity between inhibitors. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% QSAR classification model
+%%%%%%% Introduction
+
+In addition to QSAR regression modeling, qSAR classification studies were also performed to differentiate active inhibitors from inactives. 
+
+%%%%%%%
+%%%%%%% Methods
+
+Compounds having reported IC$_{50}$ and pIC$_{50}$ values were used for regression analysis. Furthermore, classification studies were also performed by binning the bioactivity values as actives and inactives using IC$_{50}$ thresholds of $<$ 1 $\mu$M and $>$ 10 $\mu$M, respectively, which corresponded to pIC$_{50}$ values of 6 and 5, respectively. Additionally, compounds originally annotated as inactives were also used for classification studies. This resulted in a data set comprising of 1,236 actives and 922 inactives.
+
+The goal of classification is to predict the categorical class labels (ie., active and inactive) of new instances based on paste observations. On the other hand,
+
+As for classification, accuracy (Ac), sensitivity (Sn), specificity (Sp) and Matthew’s Correlation Coefficients (MCC) on both independent test sets. Acc is the percentage of correctly classified instances which can be calculated with the equation:
+%
+\begin{equation} Ac= \frac{TP + TN}{(TP + TN + FP +
+FN)}\times100 \label{eq:acc} \end{equation}
+\begin{equation} Sn = \frac{TP}{(TP+ FN)}\times100
+\label{eq:sen} \end{equation}
+\begin{equation} Sp = \frac{TN}{(TN+ FP)}\times100
+\label{eq:spec} \end{equation}
+\begin{equation} MCC = \frac{TP\times TN  - FP\times
+FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}} \label{eq:mcc} \end{equation}
+%
+where TP is the instances of true positives, TN is the instances of true negatives, FP is the instances of false positives and FN is the instance of false negatives. The range of MCC is from --1 to 1 in which an MCC value approaching 1 indicates the best possible prediction while MCC approaching --1 indicates the worst possible prediction. On the other hand, MCC of 0 suggests a random prediction scheme. 
+
+
+%%%%%%% Results and Discussion
+
+It was observed that the important features in both regression and classification models were quite similar especially for the top ranked features. Here, we will refer to the rank number from the regression model (Fig. \ref{fig:importance}A) while its corresponding rank number in the classification model were slightly higher or lower.
+
+
+\subsection*{QSAR classification model}
+
+In addition to the regression models, QSAR classification models were also constructed to facilitate the differentiation between active and inactive AChE inhibitors. Particularly, compounds were classified as actives when their pIC$_{50}$ values are greater than or equal to 6 (i.e. corresponding to IC$_{50}$ values less than or equal to 1 $\mu$M) and as inactives for those having values less than or equal to 5 (i.e. corresponding to IC$_{50}$ value greater than or equal to 10 $\mu$). The intermediates with pIC$_{50}$ values in between 5 and 6 were subjected to removal from the data set. This resulted in a total of 2,158 compounds (i.e. comprising of 1,236 actives and 922 inactives). Four assessment parameters (e.g. Ac, Sn, Sp and MCC) were employed for evaluating the robustness of the models. 
+
+As for classification model built with full data set, CDK fingerprint, CDK extended fingerprint, Klekota-Roth fingerprint and Klekota-Roth fingerprint count perform excellently well, judging from the predictive performance of the 10-fold CV and external set. This may indicate that these types of fingerprint can well represent the overall structure of compounds in classifying the activity of AChE inhibitors. On the other hand, Estate fingerprint performed very poor with Ac of 64.70$\pm$1.49 \%, Sn of 66.86$\pm$1.62 \%, Sp of 62.22$\pm$2.38 \%, MCC of 0.29$\pm$0.03 for 10-fold CV set while Ac of 65.62$\pm$3.17 \%, Sn of 67.49$\pm$5.14 \%, Sp of 63.46$\pm$5.61 \%, MCC of 0.31$\pm$0.03 for the external set. Nevertheless, it can be observed that all of the fingerprint descriptors possess a MCC values higher than of 0, indicating that fingerprint descriptors are fast and reliable for use in QSAR as well as QSPR studies. 
+
+
+\begin{sidewaystable}[!ht]
+\centering
+\caption{\textbf{Performance summary of QSAR classification models for predicting the bioactivity class.}}
+\label{Table_Performance_cutoff}
+%\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llllllllllllllll}
+\hline
+\textbf{Descriptor class} & \textbf{\textit{N}} & \multicolumn{4}{c}{\textbf{Training set}} &  & \multicolumn{4}{c}{\textbf{10--fold CV set}} &  & \multicolumn{4}{c}{\textbf{External set}} \T\B \\ \cline{3-6} \cline{8-11} \cline{13-16}
+ &  &  \multicolumn{1}{c}{\textbf{Ac (\%)}} & \multicolumn{1}{c}{\textbf{Sn (\%)}} & \multicolumn{1}{c}{\textbf{Sp (\%)}} & \multicolumn{1}{c}{\textbf{MCC}} & \textbf{} & \multicolumn{1}{c}{\textbf{Ac (\%)}} & \multicolumn{1}{c}{\textbf{Sn (\%)}} & \multicolumn{1}{c}{\textbf{Sp (\%)}} & \multicolumn{1}{c}{\textbf{MCC}} & \textbf{} & \multicolumn{1}{c}{\textbf{Ac (\%)}} & \multicolumn{1}{c}{\textbf{Sn (\%)}} & \multicolumn{1}{c}{\textbf{Sp (\%)}} & \multicolumn{1}{c}{\textbf{MCC}} \T\B \\ \hline
+% \textbf{Single--target} & &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+CDK & 941 & 98.32$\pm$0.18 & 97.52$\pm$0.45 & 98.94$\pm$0.24 & 0.97$\pm$0.00 &  & 88.97$\pm$0.54 & 86.84$\pm$0.77 & 90.60$\pm$0.61 & 0.78$\pm$0.01 &  & 89.13$\pm$1.42 & 86.91$\pm$2.66 & 90.83$\pm$1.63 & 0.78$\pm$0.03 \T \\
+CDK extended & 941 & 98.31$\pm$0.17 & 97.44$\pm$0.39 & 98.98$\pm$0.24 & 0.97$\pm$0.00 &  & 88.87$\pm$0.55 & 86.95$\pm$0.75 & 90.36$\pm$0.62 & 0.77$\pm$0.01 &  & 89.10$\pm$1.42 & 87.15$\pm$2.33 & 90.62$\pm$1.88 & 0.78$\pm$0.03 \\
+CDK graph only & 220 & 96.13$\pm$0.29 & 94.71$\pm$0.68 & 97.39$\pm$0.45 & 0.92$\pm$0.01 &  & 82.67$\pm$0.73 & 78.15$\pm$1.07 & 86.65$\pm$0.92 & 0.65$\pm$0.01 &  & 82.84$\pm$1.81 & 77.96$\pm$3.53 & 87.11$\pm$2.75 & 0.66$\pm$0.04 \\ 
+E-State & 22 & 87.71$\pm$0.67 & 87.72$\pm$1.29 & 87.70$\pm$1.48 & 0.75$\pm$0.01 &  & 64.57$\pm$1.52 & 67.28$\pm$1.82 & 61.44$\pm$1.96 & 0.29$\pm$0.03 &  & 64.45$\pm$2.77 & 67.40$\pm$4.42 & 61.01$\pm$4.91 & 0.29$\pm$0.06 \\
+% \textbf{Multi--target} & &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+MACCS & 80 & 96.67$\pm$0.26 & 95.52$\pm$0.55 & 97.67$\pm$0.43 & 0.93$\pm$0.01 & & 85.64$\pm$0.68 & 82.66$\pm$1.00 & 88.23$\pm$0.74 & 0.71$\pm$0.01 & & 86.02$\pm$1.66 & 83.09$\pm$3.23 & 88.57$\pm$2.20 & 0.72$\pm$0.03 \\ %\hline
+% \textbf{Combine--target} &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+PubChem & 101 & 96.71$\pm$0.26 & 95.57$\pm$0.58 & 97.66$\pm$0.40 & 0.93$\pm$0.01 & & 86.63$\pm$0.60 & 83.75$\pm$0.89 & 89.05$\pm$0.76 & 0.73$\pm$0.01 & & 87.24$\pm$1.64 & 84.09$\pm$2.92 & 89.90$\pm$2.36 & 0.74$\pm$0.03 \\
+Substructure & 36 & 89.51$\pm$0.55 & 88.91$\pm$1.10 & 90.08$\pm$1.03 & 0.79$\pm$0.01 & & 70.47$\pm$1.38 & 69.87$\pm$1.69 & 71.03$\pm$1.76 & 0.41$\pm$0.03 & & 70.81$\pm$3.08 & 70.74$\pm$4.35 & 70.86$\pm$4.24 & 0.42$\pm$0.06 \\
+Substructure count & 34 & 97.10$\pm$0.24 & 96.25$\pm$0.49 & 97.75$\pm$0.37 & 0.94$\pm$0.00 & & 85.82$\pm$0.64 & 82.82$\pm$0.94 & 88.12$\pm$0.69 & 0.71$\pm$0.01 & & 85.97$\pm$1.60 & 82.90$\pm$2.83 & 88.34$\pm$2.06 & 0.71$\pm$0.03 \\
+Klekota-Roth & 108 & 96.10$\pm$0.26 & 94.80$\pm$0.50 & 97.11$\pm$0.40 & 0.92$\pm$0.01 & & 86.36$\pm$0.57 & 84.55$\pm$0.87 & 87.78$\pm$0.70 & 0.72$\pm$0.01 & & 86.42$\pm$1.60 & 84.83$\pm$2.81 & 87.66$\pm$2.18 & 0.72$\pm$0.03 \\
+Klekota-Roth count & 72 & 96.67$\pm$0.23 & 95.03$\pm$0.57 & 97.87$\pm$0.33 & 0.93$\pm$0.00 & & 87.74$\pm$0.47 & 84.58$\pm$0.89 & 90.06$\pm$0.53 & 0.75$\pm$0.01 & & 88.25$\pm$1.39 & 85.54$\pm$2.58 & 90.25$\pm$1.94 & 0.76$\pm$0.03 \\
+2D atom pairs & 44 & 92.77$\pm$0.45 & 91.35$\pm$0.88 & 93.96$\pm$0.73 & 0.85$\pm$0.01 & & 75.88$\pm$0.98 & 70.66$\pm$1.42 & 80.25$\pm$1.14 & 0.51$\pm$0.02 & & 76.41$\pm$2.29 & 71.36$\pm$3.65 & 80.64$\pm$3.43 & 0.52$\pm$0.05 \\
+2D atom pairs count & 38 & 96.74$\pm$0.24 & 95.06$\pm$0.48 & 98.00$\pm$0.39 & 0.93$\pm$0.00 & & 83.55$\pm$0.66 & 77.54$\pm$0.99 & 88.03$\pm$0.74 & 0.66$\pm$0.01 & &  84.13$\pm$1.58 & 78.48$\pm$2.84 & 88.33$\pm$1.95 & 0.67$\pm$0.03 \B \\
+\hline
+\end{tabular}
+}
+\end{sidewaystable}
+
+
+
+
+%%%%%
+% Fingerprint
+%%%
+\cite{bender2009similar} investigated the similarity of 37 fingerprint descriptors and categorized them into four major classes: binary circular fingerprints, circular fingerprints counts, path-based and keyed fingerprints and pharmacophore-based fingerprints. Furthermore, \cite{bender2010similar} stressed that circular fingerprints offer good performance in many areas while atom count descriptors afforded poor performances as evaluated from 11 data sets. 
+
+
+%%%% Chemical space
+It can be seen that ALogP and MW are correlated with the activity class of AChE inhibitors. Although ALogP was found to be highest in actives, the average MW value was the greatest.
+
+
+
+
+%%% Table
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models for predicting pIC$_{50}$.}}
+\label{performance_random_forest}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{CV}$}} & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{Ext}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$R^{2}$} & \textbf{$RMSE_{Tr}$} &  & \textbf{$Q^{2}_{CV}$} & \textbf{$RMSE_{CV}$} &  & \textbf{$Q^{2}_{Ext}$} & \textbf{$RMSE_{Ext}$} &  &  &  \T\B \\ 
+\hline
+CDK & 914  & 0.83$\pm$0.03 & 0.70$\pm$0.07 &  & 0.72$\pm$0.08 & 0.88$\pm$0.16 &  & 0.73$\pm$0.06 &  0.88$\pm$0.12 &  & 0.12 & 0.10 \T \\
+CDK extended & 924  & 0.84$\pm$0.02 & 0.68$\pm$0.06 &  & 0.73$\pm$0.08 & 0.88$\pm$0.16 &  & 0.73$\pm$0.05 & 0.88$\pm$0.12 &  & 0.11 & 0.11 \\
+CDK graph only & 195  & 0.79$\pm$0.02 & 0.79$\pm$0.05 &  & 0.67$\pm$0.08 & 0.99$\pm$0.16 &  & 0.66$\pm$0.05 & 0.99$\pm$0.11 &  & 0.12 & 0.13 \\
+E-State & 22  & 0.58$\pm$0.02 & 1.12$\pm$0.05 &  & 0.52$\pm$0.07 & 1.17$\pm$0.12 &  & 0.51$\pm$0.05 & 1.21$\pm$0.09 &  & 0.06 & 0.07 \\
+MACCS & 77  & 0.79$\pm$0.02 & 0.78$\pm$0.05 &  & 0.70$\pm$0.08 & 0.94$\pm$0.18 &  & 0.70$\pm$0.06 & 0.93$\pm$0.12 &  & 0.09 & 0.09 \\
+PubChem & 100  & 0.80$\pm$0.02 & 0.77$\pm$0.06 &  & 0.69$\pm$0.08 & 0.95$\pm$0.17 &  & 0.69$\pm$0.06 & 0.94$\pm$0.11 &  & 0.11 & 0.11 \\
+Substructure & 31  & 0.67$\pm$0.02 & 0.99$\pm$0.04 &  & 0.60$\pm$0.07 & 1.08$\pm$0.15 &  & 0.60$\pm$0.04 & 1.09$\pm$0.09 &  & 0.07 & 0.07 \\
+Substructure count & 27  & 0.82$\pm$0.03 & 0.73$\pm$0.06 &  & 0.70$\pm$0.07 & 0.92$\pm$0.14 &  & 0.71$\pm$0.05 & 0.91$\pm$0.10 &  & 0.12 & 0.11 \\
+Klekota-Roth & 101 & 0.80$\pm$0.02 & 0.78$\pm$0.05 &  & 0.68$\pm$0.08 & 0.96$\pm$0.17 &  & 0.68$\pm$0.05 & 0.96$\pm$0.11 &  & 0.12 & 0.12 \\
+Klekota-Roth count & 68 & 0.81$\pm$0.03 & 0.74$\pm$0.06 &  & 0.70$\pm$0.08 & 0.92$\pm$0.17 &  & 0.70$\pm$0.05 & 0.93$\pm$0.10 &  & 0.11 & 0.11 \\
+2D atom pairs & 42  & 0.67$\pm$0.03 & 1.00$\pm$0.06 &  & 0.56$\pm$0.07 & 1.13$\pm$0.16 &  & 0.57$\pm$0.05 & 1.13$\pm$0.10 &  & 0.11 & 0.10 \\
+2D atom pairs count & 39 & 0.89$\pm$0.03 & 0.71$\pm$0.06 &  & 0.68$\pm$0.08 & 0.96$\pm$0.68 &  & 0.68$\pm$0.06 & 0.96$\pm$0.12 &  & 0.21 & 0.21 \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models for predicting pIC$_{50}$.}}
+\label{performance_random_forest}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{CV}$}} & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{Ext}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$R^{2}$} & \textbf{$RMSE_{Tr}$} &  & \textbf{$Q^{2}_{CV}$} & \textbf{$RMSE_{CV}$} &  & \textbf{$Q^{2}_{Ext}$} & \textbf{$RMSE_{Ext}$} &  &  &  \T\B \\ 
+\hline
+CDK & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 &  0.00$\pm$0.00 &  & 0.00 & 0.00 \T \\
+CDK extended & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+CDK graph only & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+E-State & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+MACCS & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+PubChem & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+Substructure & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+Substructure count & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+Klekota-Roth & 000 & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+Klekota-Roth count & 000 & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+2D atom pairs & 000  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+2D atom pairs count & 000 & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+
+
+
+%%%% Khuner Roy Metrics Rm2 mean and delta Rm2
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models for predicting pIC$_{50}$ using $Rm^{2}$ and $\Delta{Rm}^{2}$ metrics.}}
+\label{performance_random_forest}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{CV}$}} & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{Ext}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$Rm^{2}$} & \textbf{$\Delta{Rm}^{2}$} &  & \textbf{$Rm^{2}$} & \textbf{$\Delta{Rm}^{2}$} &  & \textbf{$Rm^{2}$} & \textbf{$\Delta{Rm}^{2}$} &  &  &  \T\B \\ 
+\hline
+CDK & 960  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 &  0.00$\pm$0.00 &  & 0.00 & 0.00 \T \\
+CDK extended & 948  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+CDK graph only & 198  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00 & 0.00 \\
+E-State & 21  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.00$\pm$0.00 & 0.00$\pm$0.00 &  & 0.56$\pm$0.05 & 1.10$\pm$0.08 &  & 0.00 & 0.00 \\
+MACCS & 77  & 0.89$\pm$0.01 & 0.56$\pm$0.03 &  & 0.77$\pm$0.07 & 0.81$\pm$0.15 &  & 0.77$\pm$0.04 & 0.80$\pm$0.09 &  & 0.00 & 0.00 \\
+PubChem & 103  & 0.90$\pm$0.01 & 0.55$\pm$0.03 &  & 0.76$\pm$0.05 & 0.80$\pm$0.11 &  & 0.78$\pm$0.03 & 0.79$\pm$0.08 &  & 0.00 & 0.00 \\
+Substructure & 30  & 0.75$\pm$0.01 & 0.85$\pm$0.03 &  & 0.64$\pm$0.06 & 1.00$\pm$0.13 &  & 0.65$\pm$0.05 & 0.98$\pm$0.08 &  & 0.00 & 0.00 \\
+Substructure count & 26  & 0.92$\pm$0.01 & 0.50$\pm$0.02 &  & 0.78$\pm$0.06 & 0.77$\pm$0.14 &  & 0.78$\pm$0.05 & 0.77$\pm$0.10 &  & 0.00 & 0.00 \\
+Klekota-Roth & 111 & 0.89$\pm$0.01 & 0.59$\pm$0.03 &  & 0.74$\pm$0.07 & 0.85$\pm$0.14 &  & 0.76$\pm$0.05 & 0.81$\pm$0.10 &  & 0.00 & 0.00 \\
+Klekota-Roth count & 72 & 0.91$\pm$0.01 & 0.52$\pm$0.03 &  & 0.78$\pm$0.06 & 0.79$\pm$0.14 &  & 0.78$\pm$0.05 & 0.77$\pm$0.11 &  & 0.00 & 0.00 \\
+2D atom pairs & 42  & 0.75$\pm$0.03 & 0.85$\pm$0.06 &  & 0.61$\pm$0.08 & 1.03$\pm$0.15 &  & 0.60$\pm$0.06 & 1.05$\pm$0.12 &  & 0.00 & 0.00 \\
+2D atom pairs count & 38 & 0.92$\pm$0.01 & 0.51$\pm$0.02 &  & 0.74$\pm$0.07 & 0.84$\pm$0.15 &  & 0.76$\pm$0.05 & 0.82$\pm$0.10 &  & 0.00 & 0.00 \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+
+
+\subsection*{Data set}
+
+A data set of inhibitors against human AChE (Target ID CHEMBL220) were compiled from the ChEMBL 20 database \citep{gaulton2012chembl} that is comprised of a total number of 9,242 bioactivity data points from 5,049 compounds. The initial data set was assembled from several bioactivity measurement units including (in order of decreasing data size) IC$_{50}$, \textit{K}$_i$, \% activity, \% inhibition, MIC, EC$_{50}$, etc. IC$_{50}$ was selected for further investigation as they constituted the largest subset with 4,910 compounds. A closer look revealed that 991 compounds had no reported IC$_{50}$ values and were thus discarded. Furthermore, two compounds were found to have no SMILES notation associated with it and were thus removed. A final data set comprising of 3,917 compounds was obtained.
+
+\begin{abstract}
+Alzheimer's disease (AD) is a chronic neurodegenerative disease which leads to \hl{the} gradual loss of neuronal cells. Several hypotheses for AD exists (e.g. cholinergic, amyloid, tau hypotheses, etc.). As per the cholinergic hypothesis, the deficiency of choline is responsible for AD therefore the inhibition of AChE is a lucrative therapeutic strategy for the treatment of AD. Acetylcholinesterase (AChE) is an enzyme that catalyzes the breakdown of the neurotransmitter acetylcholine that is essential for cognition and memory. A large data set of 3,917 compounds with reported IC$_{50}$ values against AChE was obtained from ChEMBL and employed in quantitative structure-activity relationship (QSAR) study so as to gain insights on their origin of bioactivity. AChE inhibitors were described by a set of 12 fingerprint descriptors and predictive models were constructed from 100 different data splits using random forest. Generated models afforded $R^2$, $Q^2_{CV}$ and $Q^2_{Ext}$ values in ranges of 0.58--0.84, 0.52--0.72 and 0.51--0.73 for the training set, 10-fold cross-validated set and external set, respectively. \hl{The best model built using the substructure count was selected according to the OECD guidelines and it afforded $R^2$, $Q^2_{CV}$ and $Q^2_{Ext}$ values of 0.84, Y and Z, respectively.} Furthermore, Y-scrambling was applied to evaluate the possibility of chance correlation of the predictive model. Subsequently, a thorough analysis of the substructure fingerprint count was conducted to provide informative insights on the inhibitory activity of AChE inhibitors. Moreover, Kennard-Stone sampling of the actives were applied to select 30 diverse compounds for further molecular docking studies in order to gain structural insights on the origin of AChE inhibition. Site-moiety mapping of compounds from the diversity set revealed three binding anchors encompassing both hydrogen-bonding and van der Waals interaction. Molecular docking revealed that compound \textbf{13} exhibited the lowest binding energy of --12.2 kcal/mol against human AChE, which is modulated by hydrogen bonding, $\pi$-$\pi$ stacking and hydrophobic interaction inside the binding pocket. These information may be used as guidelines for the design of novel and robust AChE inhibitors.
+\end{abstract}
+
+
+\subsection*{Mechanistic interpretation of feature importance}
+
+Feature importance analysis help reveal features that are important toward bioactivity. There are essentially two parameters for evaluating the relative importance of features used in models using the RF algorithm: (i) accuracy and (ii) Gini index (i.e. variance of the responses). The latter was selected as a metric for ranking important features (i.e. mean decrease of the Gini index) for predicting the pIC$_{50}$ of AChE inhibitors (Fig. \ref{fig:importance}). Table~\ref{substructure} lists the substructure fingerprints along with their respective descriptions. 
+
+As can be seen in Fig. \ref{fig:importance}, the top ranking feature is secondary carbon (SubFPC2), which is a carbon atom with two carbon neighbors. In the context of drug design, such central carbon atom may be more difficult to be accessed and metabolized by cytochrome P450 \citep{uetrecht2007drug} and therefore are more metabolically stable. 
+
+The second top ranked feature is chiral center specified (SubFPC307). Chiral centers are tetrahedral atoms (i.e. typically carbon) having four different substituents. Chirality is of great interest in drug discovery and development as isomers having different chiral centers (i.e. R and S) can afford very different inhibitory properties toward the same enzyme \citep{h2011significance}. \cite{brimblecombe1971significance} stressed that differences of chiral centers of 2-cyclohexyl-2-hydroxy-2-phenylacetic acid, which was investigated both \textit{in vitro} and \textit{in vivo}, conferred strike differences in their activity in which the R-enantiomer was 100 times more active than that of the S-enantiomeric counterpart. 
+
+The third most important feature is the rotatable bond (SubFPC302). Based on the rule of three for defining lead-like compounds, a compound may have a lead-like characters if it does have rotatable bonds of no more than 3. On the other hand, \cite{veber2002molecular} noted that the the upper limit of a orally bioavailable drugs is of seven rotatable bonds. Nevertheless, it has been found that number of rotatable bonds provide better discrimination between compounds that are orally active and those that are not. \cite{kryger1999structure} claimed that E2020 (i.e. also known as donepezil and marketed as Aricept) needs at least two rotatable bonds on each side of the piperidine in which two aromatic moieties of E2020 interact with Trp84 and Trp279, suggesting that links between aromatic systems of the inhibitor against its AChE counterparts are essential to yield high affinity. 
+
+The fourth and fifth important features are 1,5-Tautomerizable (SubFPC301) and 1,3-Tautomerizable (SubFPC300), respectively. Triazoles are able to undergo tautomerization in which there are multple instance of the protonated atom. These moiety are typically synthesized via click chemistry, an approach that has successfully been used to produce novel AChE inhibitors \citep{krasinski2005situ}. Similary, \cite{mohammadi2015potent} chemically synthesized acridone linked to 1,2,3-triazole derivatives and tested their inhibitory activity against AChE. Their results showed that most of the synthesized compounds exhibited satisfactory inhibitory activity when compared to the reference drug rivastigimine with sub-micromolar concentrations affording IC$_50$ values in the range of 7.31--88.10 $\mu$M. 
+
+The sixth important features is C ONS bond (SubFPC295), which is defined as the cyano functional group. % Add reference %
+
+The seventh important substructure is the aromatic ring (SubFPC274). Findings from X-ray crystallographic study showed that in the binding site of the co-crystal structure of AChE with tacrine, the aromatic ring of acridine engages in a $\pi$-$\pi$ stacking interaction with the indole of Trp84 thereby indicating the importance of the aromatic ring for AChE inhibition. % Add reference %
+
+The eighth important substructure is secondary mixed amine (SubFPC32). The importance of the moiety was demonstrated in the work of \cite{bembenek2008lead} in which a structure-based approach was used to reveal that in the catalytic triad, Trp84 interacts with the quaternary amine of acetylcholine through a cation-$\pi$ interaction. Furthermore, in the 'anionic' site Trp279 appears to attract the amine moiety via cation and/or hydrophobic interactions. 
+
+The ninth and tenth important substructures are heterocyclic rings (SubFPC275) and tertiary carbon (SubFPC3). Heterocycles are of high relevance in the design of AChE inhibitors as it allows $\pi$-$\pi$ stacking interaction with key amino acid residues in the binding site of AChE. It is observed that the binding site of the AChE are highly hydrophobic in nature. Particularly, the Trp286 which is a part of the peripheral anionic site of the AChE is involved in the $\pi$-$\pi$ interaction with heterocycles of AChE inhibitors \citep{lu2011discovery}. The aforementioned explanation made for the secondary carbon is also applicable for the tertiary carbon in which the higher number of carbon neighbors would also confer high stability against cytochrome P450 metabolism.
+
+
+\section*{Conclusion}
+
+In conclusion, twelve sets of fingerprint descriptors were used for constructing QSAR models and their performances were comparatively evaluated. It was observed that several fingerprint descriptors afforded good performance for the constructed models indicating that they could capture the feature space of AChE inhibitors. By taking advantage of the built-in feature importance estimator from RF known as the Gini index, the following important features that are critical for AChE inhibition were identified: secondary carbon (SubFPC2), chiral center specified (SubFPC307), 1,3-Tautomerizable (SubFPC300), 1,5-Tautomerizable (SubFPC301), rotatable bond (SubFPC302), C ONS bond (SubFPC295) and aromatic ring (SubFPC274). Results from molecular docking also support the aforementioned findings from the QSAR models in which the aromatic, heteroaromatic and heterocyclic rings were preferable moieties for interacting with the hydrophobic pocket of AChE. These can be used as a guide for designing novel inhibitors. 
+
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models for predicting pIC$_{50}$.}}
+\label{performance_random_forest}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{CV}$}} & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{Ext}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$R^{2}$} & \textbf{$RMSE_{Tr}$} &  & \textbf{$Q^{2}_{CV}$} & \textbf{$RMSE_{CV}$} &  & \textbf{$Q^{2}_{Ext}$} & \textbf{$RMSE_{Ext}$} &  &  &  \T\B \\ 
+\hline
+CDK & 960  & 0.93$\pm$0.01 & 0.44$\pm$0.04 &  & 0.79$\pm$0.07 & 0.76$\pm$0.15 &  & 0.80$\pm$0.04 &  0.73$\pm$0.09 &  & 0.14 & 0.13 \T \\
+CDK extended & 948  & 0.94$\pm$0.01 & 0.42$\pm$0.03 &  & 0.79$\pm$0.06 & 0.76$\pm$0.12 &  & 0.81$\pm$0.04 & 0.72$\pm$0.08 &  & 0.15 & 0.13 \\
+CDK graph only & 198  & 0.87$\pm$0.01 & 0.61$\pm$0.03 &  & 0.72$\pm$0.06 & 0.87$\pm$0.13 &  & 0.72$\pm$0.05 & 0.87$\pm$0.09 &  & 0.15 & 0.15 \\
+E-State & 21  & 0.66$\pm$0.03 & 1.00$\pm$0.05 &  & 0.55$\pm$0.09 & 1.11$\pm$0.13 &  & 0.56$\pm$0.05 & 1.10$\pm$0.08 &  & 0.11 & 0.10 \\
+MACCS & 77  & 0.89$\pm$0.01 & 0.56$\pm$0.03 &  & 0.77$\pm$0.07 & 0.81$\pm$0.15 &  & 0.77$\pm$0.04 & 0.80$\pm$0.09 &  & 0.12 & 0.12 \\
+PubChem & 103  & 0.90$\pm$0.01 & 0.55$\pm$0.03 &  & 0.76$\pm$0.05 & 0.80$\pm$0.11 &  & 0.78$\pm$0.03 & 0.79$\pm$0.08 &  & 0.14 & 0.12 \\
+Substructure & 30  & 0.75$\pm$0.01 & 0.85$\pm$0.03 &  & 0.64$\pm$0.06 & 1.00$\pm$0.13 &  & 0.65$\pm$0.05 & 0.98$\pm$0.08 &  & 0.11 & 0.10 \\
+Substructure count & 26  & 0.92$\pm$0.01 & 0.50$\pm$0.02 &  & 0.78$\pm$0.06 & 0.77$\pm$0.14 &  & 0.78$\pm$0.05 & 0.77$\pm$0.10 &  & 0.14 & 0.14 \\
+Klekota-Roth & 111 & 0.89$\pm$0.01 & 0.59$\pm$0.03 &  & 0.74$\pm$0.07 & 0.85$\pm$0.14 &  & 0.76$\pm$0.05 & 0.81$\pm$0.10 &  & 0.15 & 0.13 \\
+Klekota-Roth count & 72 & 0.91$\pm$0.01 & 0.52$\pm$0.03 &  & 0.78$\pm$0.06 & 0.79$\pm$0.14 &  & 0.78$\pm$0.05 & 0.77$\pm$0.11 &  & 0.13 & 0.13 \\
+2D atom pairs & 42  & 0.75$\pm$0.03 & 0.85$\pm$0.06 &  & 0.61$\pm$0.08 & 1.03$\pm$0.15 &  & 0.60$\pm$0.06 & 1.05$\pm$0.12 &  & 0.14 & 0.15 \\
+2D atom pairs count & 38 & 0.92$\pm$0.01 & 0.51$\pm$0.02 &  & 0.74$\pm$0.07 & 0.84$\pm$0.15 &  & 0.76$\pm$0.05 & 0.82$\pm$0.10 &  & 0.18 & 0.16 \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models for predicting pIC$_{50}$ using $Rm^{2}$ and $\Delta{Rm}^{2}$ metrics.}}
+\label{performance_random_forest_roy}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}}  \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$Rm^{2}$} & \textbf{$\Delta{Rm}^{2}$} &  & \textbf{$Rm^{2}$} & \textbf{$\Delta{Rm}^{2}$} &  & \textbf{$Rm^{2}$} & \textbf{$\Delta{Rm}^{2}$}  \T\B \\ 
+\hline
+CDK & 960  & 0.82$\pm$0.02 & 0.07$\pm$0.01 &  & 0.62$\pm$0.09 & 0.20$\pm$0.06 &  & 0.64$\pm$0.05 &  0.19$\pm$0.03  \T \\
+CDK extended & 948  & 0.83$\pm$0.01 & 0.07$\pm$0.01 &  & 0.62$\pm$0.08 & 0.20$\pm$0.05 &  & 0.65$\pm$0.05 & 0.18$\pm$0.03  \\
+CDK graph only & 198  & 0.70$\pm$0.02 & 0.14$\pm$0.01 &  & 0.51$\pm$0.07 & 0.27$\pm$0.05 &  & 0.53$\pm$0.05 & 0.26$\pm$0.03  \\
+E-State & 21  & 0.35$\pm$0.03 & 0.38$\pm$0.02 &  & 0.27$\pm$0.07 & 0.40$\pm$0.04 &  & 0.28$\pm$0.05 & 0.41$\pm$0.03  \\
+MACCS & 77  & 0.73$\pm$0.01 & 0.12$\pm$0.01 &  & 0.57$\pm$0.09 & 0.23$\pm$0.05 &  & 0.58$\pm$0.05 & 0.23$\pm$0.03  \\
+PubChem & 103  & 0.74$\pm$0.02 & 0.12$\pm$0.01 &  & 0.57$\pm$0.07 & 0.23$\pm$0.04 &  & 0.59$\pm$0.05 & 0.22$\pm$0.03  \\
+Substructure & 30  & 0.50$\pm$0.02 & 0.28$\pm$0.01 &  & 0.39$\pm$0.07 & 0.34$\pm$0.05 &  & 0.41$\pm$0.05 & 0.33$\pm$0.03  \\
+Substructure count & 26  & 0.77$\pm$0.01 & 0.10$\pm$0.01 &  & 0.60$\pm$0.08 & 0.22$\pm$0.05 &  & 0.61$\pm$0.06 & 0.21$\pm$0.04  \\
+Klekota-Roth & 111 & 0.71$\pm$0.02 & 0.14$\pm$0.01 &  & 0.54$\pm$0.08 & 0.25$\pm$0.05 &  & 0.56$\pm$0.06 & 0.24$\pm$0.03  \\
+Klekota-Roth count & 72 & 0.76$\pm$0.02 & 0.11$\pm$0.01 &  & 0.60$\pm$0.08 & 0.22$\pm$0.05 &  & 0.61$\pm$0.07 & 0.21$\pm$0.04  \\
+2D atom pairs & 42  & 0.49$\pm$0.03 & 0.28$\pm$0.02 &  & 0.35$\pm$0.08 & 0.36$\pm$0.04 &  & 0.35$\pm$0.06 & 0.36$\pm$0.03  \\
+2D atom pairs count & 38 & 0.75$\pm$0.01 & 0.10$\pm$0.01 &  & 0.52$\pm$0.05 & 0.26$\pm$0.05 &  & 0.54$\pm$0.06 & 0.25$\pm$0.04  \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+%%%%% Khuner Roy Metrics Rm2 mean and delta Rm2
+
+
+
+
+
+
+
+
+
+
+
+%As seen in Figure 5, very few compounds indeed fall outside the $\pm$3 standardized residual. There are 14 compounds (\#1234, \#1944, \#1983, \#1080, \#1860, \#1065, \#799, \#676, \#1060, \#1160, \#1347, \#1308 and \#1723) from the internal set and 14 compounds (\#1234, \#1944, \#1983, \#1080, \#1860, \#1065, \#799, \#676, \#1060, \#1160, \#1347, \#1308 and \#1723) from the external set having h$_{i}$ > \textit{h}$^*$, where \textit{h}$^*$ = 0.025.
+
+
+
+As can be seen in Fig. \ref{fig:williams}, very few compounds indeed fall outside the $\pm$3 standardized residual range. This consisted of 6 compounds (\#997, \#1829, \#62, \#1096, \#13, \#677) from the internal set and 11 compounds (\#2116, \#2120, \#2388, \#2117, \#2392, \#2323, \#2423, \#2424, \#2507, \#2219, \#2422) from the external set that had standardized residual higher than 3. On the other hand, 7 compounds (\#1567, \#576, \#1644, \#1098, \#2022, \#1447 \#322) from the internal set and 8 compounds (\#2486, \#2353, \#2130, \#2553, \#2389, \#2072, \#2103, \#2125) from the external set had standardized residual lower than -3.
+
+
+AChE is a crucial enzyme that plays an important role in terminating ACh-mediated neurotransmission at the synapse through acylation and deacylation process of neurotransmitter ACh. 
+
+
+

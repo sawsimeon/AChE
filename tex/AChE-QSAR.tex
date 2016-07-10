@@ -1,0 +1,498 @@
+\documentclass[fleqn,10pt]{wlpeerj}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{authblk}
+\usepackage{afterpage}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+\usepackage{amsmath}
+\usepackage{lineno}
+\usepackage{etoolbox}
+\usepackage{rotfloat} 
+\restylefloat{table}
+\usepackage[section]{placeins}
+\usepackage{microtype}
+\usepackage{adjustbox}
+\usepackage[justification=justified,singlelinecheck=false]{caption}
+\usepackage{lineno}
+\usepackage{soul,color}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{rotating}
+\usepackage{tabularx}
+
+
+\linenumbers
+
+\newcommand\T{\rule{0pt}{4ex}}       % Top strut
+\newcommand\B{\rule[-2ex]{0pt}{0pt}} % Bottom strut
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Probing the origins of human acetylcholinesterase inhibition via QSAR modeling and molecular docking} 
+
+\author[1]{Saw~Simeon}
+\author[1]{Nuttapat~Anuwongcharoen}
+\author[1]{Watshara~Shoombuatong}
+\author[1]{Aijaz~Ahmad~Malik}
+\author[2]{Virapong~Prachayasittikul}
+\author[3]{Jarl~E.~S.~Wikberg}
+\author[1]{Chanin~Nantasenamat\thanks{Corresponding author. E-mail: chanin.nan@mahidol.ac.th}}
+
+\affil[1]{Center of Data Mining and Biomedical Informatics, Faculty of Medical Technology, Mahidol~University, Bangkok 10700, Thailand}
+\affil[2]{Department of Clinical Microbiology and Applied Technology, Faculty of Medical Technology, Mahidol University, Bangkok 10700, Thailand}
+\affil[3]{Department of Pharmaceutical Biosciences, Uppsala University, Uppsala 751 24, Sweden}
+
+
+\begin{abstract}
+Alzheimer's disease (AD) is a chronic neurodegenerative disease which leads to \hl{the} gradual loss of neuronal cells. Several hypotheses for AD exists (e.g. cholinergic, amyloid, tau hypotheses, etc.). As per the cholinergic hypothesis, the deficiency of choline is responsible for AD therefore the inhibition of AChE is a lucrative therapeutic strategy for the treatment of AD. Acetylcholinesterase (AChE) is an enzyme that catalyzes the breakdown of the neurotransmitter acetylcholine that is essential for cognition and memory. A large \hl{non-redundant} data set of \hl{2,570} compounds with reported IC$_{50}$ values against AChE was obtained from ChEMBL and employed in quantitative structure-activity relationship (QSAR) study so as to gain insights on their origin of bioactivity. AChE inhibitors were described by a set of 12 fingerprint descriptors and predictive models were constructed from 100 different data splits using random forest. Generated models afforded $R^2$, $Q^2_{CV}$ and $Q^2_{Ext}$ values in ranges of \hl{0.66--0.93, 0.55--0.79 and 0.56--0.81 for the training set, 10-fold cross-validated set and external set, respectively}. \hl{The best model built using the substructure count was selected according to the OECD guidelines and it afforded $R^2$, $Q^2_{CV}$ and $Q^2_{Ext}$ values of 0.92$\pm$0.01, 0.78$\pm$0.06 and 0.78$\pm$0.05, respectively.} Furthermore, Y-scrambling was applied to evaluate the possibility of chance correlation of the predictive model. Subsequently, a thorough analysis of the substructure fingerprint count was conducted to provide informative insights on the inhibitory activity of AChE inhibitors. Moreover, Kennard-Stone sampling of the actives were applied to select 30 diverse compounds for further molecular docking studies in order to gain structural insights on the origin of AChE inhibition. Site-moiety mapping of compounds from the diversity set revealed three binding anchors encompassing both hydrogen-bonding and van der Waals interaction. Molecular docking revealed that compound \textbf{13} exhibited the lowest binding energy of --12.2 kcal/mol against human AChE, which is modulated by hydrogen bonding, $\pi$-$\pi$ stacking and hydrophobic interaction inside the binding pocket. These information may be used as guidelines for the design of novel and robust AChE inhibitors.
+\end{abstract}
+
+\keywords{Acetylcholinesterase, Acetylcholinesterase inhibitor, Alzheimer's disease, Quantitative structure--activity relationship, QSAR, Data mining}
+
+
+\begin{document}
+
+%
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+%
+
+\flushbottom
+\maketitle
+\thispagestyle{empty}
+\sloppy
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% main text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Introduction}
+
+Neurodegenerative diseases \hl{is caused by} the progressive loss of neural cells \hl{thereby} leading to nervous system dysfunction \citep{beal1995aging, kuca2016current}. In particular, Alzheimer's disease (AD) is a debilitating illness that is expected to triple by the year 2050 \citep{brookmeyer2007forecasting}. AD is characterized by gradual cognitive impairment, memory loss and decline in speech, behavioral abnormality and \hl{eventually} death. The pathological changes in the AD are mainly because of the dramatic loss of neurons in many areas of the central nervous system accompanied \hl{by} a great reduction \hl{in} the levels of neurotransmitters. Thus, a promising therapeutic approach is to maintain the level of \hl{the acetylcholine (ACh)} neurotransmitter by inhibiting the enzyme that is responsible for \hl{its} breakdown.
+
+Acetylcholinesterases (AChE) are mainly found in the joints of neuromuscular junction in which it not only serves as a synaptic transmission but also as an enzyme that catalyzes the breakdown of \hl{ACh} to choline and acetic acid \citep{quinn1987acetylcholinesterase}. The structure of AChE showed that it is comprised of two active sites consisting of anionic and esteratic sites \citep{bourne1995acetylcholinesterase}. The anionic site is involved in the binding of the positive quaternary amine of ACh \citep{ordentlich1993dissection}. The substrate interacts with the 14 aromatic residues that forms the active site. Of these 14 aromatic residues, Trp84 is important for the enzyme activity because when it is replaced by alanine, the activity of \hl{the} enzyme decreased \hl{by} 3000-fold \citep{tougu2001acetylcholinesterase}. In contrast, the esteratic site hydrolyzed ACh to acetate and choline in which \hl{the existence of a catalytic triad (i.e. Ser200, His440 and Glu327) resembled} that of chymotrypsin and other serine proteases \citep{harel1993quaternary}. The mechanism of the hydrolysis starts from the carboxyl ester leads to the formation of an acyl-enzyme and choline. Finally, the acyl-enzyme undergoes nucleophilic attack by water molecules thereby regenerating the enzyme \citep{tougu2001acetylcholinesterase}.
+
+AChE inhibitors form one of the most actively investigated classes of compounds having \hl{been} labeled as \hl{a} potential agent for the treatment of AD by \hl{inhibiting AChE} from hydrolyzing ACh \hl{as} to increase the level of ACh and maintain homeostasis \citep{birks2006cholinesterase}. Generally, they can be classified into reversible and irreversible inhibitors. Reversible inhibitor bind to the \hl{enzyme at} allosteric sites \hl{as} to reduce the activity of the enzyme whether or not the enzyme has already \hl{bind the substrate or not}. For example, tacrine was synthesized nearly five decades ago and in 1993 it has become the first drug to be marketed as a form of treatment for AD with approval from the \hl{U.S.} Food and Drug Administration \citep{racchi2004acetylcholinesterase}. On the other hand, irreversible inhibitors such as metrifonate \citep{morris1998metrifonate} bind to the target enzymes and dissociates very slowly from the enzyme via either covalent or non-covalent interactions \citep{kitz1962esters}.
+
+Quantitative structure-activity relationship (QSAR) is a paradigm that enables the prediction of biological activities for compounds of interest as a function of their descriptors through the use of statistical or machine learning methods \citep{nantasenamat2009practical}. Aside from the ability to predict the activity, QSAR models have been instrumental in enabling understanding on the origin of these biological activities by means of interpreting the descriptors used in building such models. 
+
+Historically, the first QSAR investigation of AChE inhibitors was reported by \cite{Mundy1978quantitative} almost 40 years ago in which the log(1/LD$_{50}$ for a series of twelve substituted 0,0-dimethyl 0-(\textit{p}-nitrophenyl) phosphorothioates and 0-analogs was predicted as a function of the octanol/water partition coefficient. Analysis of the literature of QSAR studies of AChE revealed that much of the early studies are classical QSAR models (i.e. Hansch and Free-Wilson approach) that are based on small congeneric compound set and primarily aimed at predicting AChE inhibition as to investigate the toxic effect of pesticides of various chemotypes belonging to either organophosphates \citep{Mager1983QSAR, Aaviksaar1990QSAR} or carbamates \citep{Su1980QSAR, Goldblum1981Quantitative, Walters1986Case}. Recent QSAR studies are based on the use of large and heterogeneous data sets comprising of structurally diverse chemotypes. This include the study from \cite{yan2012quantitative} where they predicted AChE inhibition for a large set of 404 compounds using multiple linear regression and support vector machine. Furthermore, \cite{lee2016mechanism} performed a 3D-QSAR investigation on a large set of 341 compounds comprising of organophosphates and carbamates. Moreover, \cite{veselinovic2015monte} compiled a set of 278 organophosphates for which they developed QSAR models for predicting AChE inhibition using SMILES-based descriptors.
+
+Research in this field had experienced two distinct transitions when viewed from biological and computational viewpoints. Biologically, early QSAR studies treat AChE as a biomarker of toxicity from pesticides while investigations from later years had shifted the focus by viewing AChE as a therapeutic target for the treatment of AD. In regards to the latter point, viewpoint on targeting AChE as a single target for treating AD is starting to be replaced by the multi-target concept in which the treatment for AD can be approached by a panel of key targets \citep{fang2015discovery, huang2011searching}. \hl{Computationally}, early studies are predominantly based on simple 2D-QSAR \citep{Mundy1978quantitative, Su1980QSAR} while later years started to use more sophisticated approach for understanding AChE inhibition encompassing 3D-QSAR \citep{Deb2012molecular, lee2016mechanism, prado20123d}, molecular dynamics \citep{shen2002molecular}, molecular docking \citep{lu2011discovery, Deb2012molecular, giacoppo2015molecular}, pharmacophore modeling \cite{lu2011discovery, gupta2014dual} and statistical molecular design \citep{andersson2014benefits, j2013review}.
+
+Herein, we propose \hl{the first} large-scale QSAR investigation for predicting AChE inhibition, which to the best of our knowledge represents the largest collection of \hl{2,570 non-redundant} compounds. QSAR models were built using interpretable learning methods (e.g. random forest) and descriptors (i.e. molecular fingerprints) as to unravel the underlying AChE inhibitory activity, \hl{which was performed in accordance with guidelines of the Organisation for Economic Cooperation and Development (OECD)}. Molecular docking was also performed on a chemically diverse set of compounds selected from active AChE inhibitors. Together, the ligand and structure-based approach employed in this study is anticipated to be useful in the design and development of robust AChE inhibitors.
+
+
+\section*{Materials and Methods}
+A summary of the workflow of \hl{this study} is provided in Figure~\ref{fig:workflow}. \hl{Briefly, this included a large-scale QSAR model for predicting and analyzing the AChE inhibition, which was performed in accordance with the OECD guidelines as follows: (i) a data set with a defined endpoint; (ii) an unambiguous learning algorithm; (iii) a defined applicability domain of the QSAR model; (iv) using appropriate measures of goodness-of-fit, robustness and predictivity; (v) a mechanistic interpretation of the QSAR model. Furthermore, molecular docking was also performed on a chemically diverse data set as to elucidate the underlying binding mechanism. To facilitate the reproducibility of the research work performed herein, the data set and codes used to perform the multivariate analysis as well as the results tables and figures are made freely available on GitHub at https://github.com/sawsimeon/AChE.}
+
+
+\begin{figure}[!b]
+\centering
+\includegraphics[width = \linewidth]{Fig_Workflow_Revision}
+\caption{\textbf{Workflow of QSAR modeling and molecular docking for investigating AChE inhibitory activity.}} 
+\label{fig:workflow} 
+\end{figure}
+
+
+\subsection*{Data set}
+
+A data set of inhibitors against human AChE (Target ID CHEMBL220) were compiled from the ChEMBL 20 database \citep{gaulton2012chembl} that is comprised of a total number of 9,242 bioactivity data points from 5,049 compounds. \hl{SMILES notations of the compounds were curated with ChemAxon's Standardizer} \citep{standardizer} \hl{using the same parameter settings as described in our previous study} \citep{simeon2016unraveling}. The initial data set was assembled from several bioactivity measurement units including (in order of decreasing data size) IC$_{50}$, \textit{K}$_i$, \% activity, \% inhibition, MIC, EC$_{50}$, etc. IC$_{50}$ was selected for further investigation as they constituted the largest subset with 4,910 compounds. \hl{A closer look revealed that 1,301 compounds had no reported IC$_{50}$ values or had lesser/greater than signs which were subjected to removal to produce in 3,609 compounds. Only data points having nM as the bioactivity unit were selected for further study, which produced 3,596 compounds. Furthermore, redundant compounds having different activity values were kept if the standard deviation of IC$_{50}$ was less than 2 and this resulted in 2,571 compounds. Moreover, some} compounds were found to have no SMILES notation associated with it and were thus removed. A final data set comprising of \hl{2,570} compounds was obtained.
+
+
+\subsection*{Description of inhibitors}
+
+AChE inhibitors were encoded by a vector of fingerprint descriptors accounting for its molecular constituents. Prior to calculating descriptors, salts were removed and tautomers were standardized using the built-in function of the PaDEL-Descriptor software \citep{yap2011padel}.
+
+Although fingerprint descriptors are able to capture the feature space of chemical compounds, however their ability to be used as descriptors for bioactivity modeling can vary. In fact, performance differences existing amongst the different fingerprint type has been the subject of several investigations into its utilization for bioactivity modeling. \cite{riniker2013open} benchmarked and assessed the performance of predictive models constructed from 2D fingerprint descriptors obtained from RDKit.
+
+In this study, the suitability of 12 different fingerprint descriptors for predicting the bioactivity of AChE inhibitors was investigated. Table \ref{table:fingerprints} summarizes the employed fingerprints along with their corresponding size, description and reference.
+
+Additionally, the four molecular descriptors that are used to define the Lipinski's rule-of-five comprising of molecular weight (MW), logarithm of the octanol/water partition coefficient (ALogP), number of hydrogen bond donor (nHBDon) and number of hydrogen bond acceptor (nHBAcc) were also computed by the PaDEL-Descriptor software.
+
+\begin{table}[!t]
+\caption{\textbf{Summary of 12 sets of fingerprint descriptors employed in this study.}}
+\label{table:fingerprints}
+\centering
+\begin{tabular}{rlrll}
+\hline
+No. & Fingerprint & Number & Description & Reference \T\B \\ 
+\hline
+1  & CDK                 & 1024 & Fingerprint of length 1024              & \cite{steinbeck2003chemistry} \T \\
+   &                     &      & and search depth of 8                   & \\
+2  & CDK extended        & 1024 & Extends the fingerprint with additional & \cite{steinbeck2003chemistry} \\
+   &                     &      & bits describing ring features           & \\
+3  & CDK graph only      & 1024 & A special version that considers only   & \cite{steinbeck2003chemistry} \\ 
+   &                     &      & the connectivity and not bond order     & \\ 
+4  & E-state             & 79   & Electrotopological state atom types     & \cite{hall1995electrotopological} \\ 
+5  & MACCS               & 166  & Binary representation of chemical       & \cite{durant2002reoptimization} \\ 
+   &                     &      & features defined by MACCS keys          & \\
+6  & PubChem             & 881  & Binary representation of substructures  & \cite{pubchemfingerprint} \\ 
+   &                     &      & defined by PubChem                      & \\
+7  & Substructure        & 307  & Presence of SMARTS patterns for         &  \cite{laggner2005smarts} \\ 
+   &                     &      & functional groups                       & \\
+8  & Substructure count  & 307  & Count of SMARTS patterns for            & \cite{laggner2005smarts} \\ 
+   &                     &      & functional groups                       & \\
+9  & Klekota-Roth        & 4860 & Presence of chemical substructures      & \cite{klekota2008chemical} \\ 
+10 & Klekota-Roth count  & 4860 & Count of chemical substructures         & \cite{klekota2008chemical} \\ 
+11 & 2D atom pairs       & 780  & Presence of atom pairs at various       & \cite{carhart1985atom} \\ 
+   &                     &      & topological distances                   & \\
+12 & 2D atom pairs count & 780  & Count of atom pairs at various          & \cite{carhart1985atom} \\ 
+   &                     &      & topological distances                   & \B \\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection*{Feature selection}
+
+Collinearity is a condition where descriptor pairs are known to have intercorrelation, which not only add complexity to the model but could potentially give rise to bias. To remedy this, the \textit{cor} function from the R package \textit{stats} was used to find the pairwise correlation among descriptors, and descriptors in a pair with a Pearson's correlation coefficient greater than the threshold of 0.7 was filtered out using the \textit{findCorrelation} function from the R package \textit{caret} to obtain a smaller subset of descriptors \citep{kuhn2008building}. 
+
+\subsection*{Data splitting}
+
+To avoid the possibility of bias that may arise from a single data split when building predictive models \citep{puzyn2011investigating}, predictive models were constructed from 100 independent data splits and the mean and standard deviation values of statistical parameters were reported. The data set was split into internal and external sets in which the former comprises 80\% whereas the latter constitutes 20\% of the initial data set. The \textit{sample} function from the R \textit{base} package was used to split the data. 
+
+\subsection*{Multivariate analysis}
+
+Supervised learning is to learn a model from labeled training data which can be used to make prediction about unseen or future data \citep{james2013introduction}. This study constructs regression models, which affords the prediction of the continuous response variable (i.e. pIC$_{50}$) as a function of predictors (i.e. fingerprint descriptors). 
+
+Random forest (RF) is an ensemble classifier that is composed of several decision trees \citep{breiman2001random}. Briefly, the main idea behind RF is that instead of building a deep decision tree with an ever-growing number of nodes, which may be at risk for overfitting and overtraining of the data, rather multiple trees are generated as to minimize the variance instead of maximizing the accuracy. As such, the results will be more noisier when compared to a well-trained decision tree, yet, these results are usually reliable and robust. The \textit{ranger} function from the R package \textit{ranger}, which is a fast implementation of the RF algorithm that was used for constructing the models \citep{wright2015ranger}.
+
+\subsection*{Validation of QSAR models}
+
+Model validation is an important process, which should be performed to ensure that a fitted model can accurately predict responses for future or unknown subjects. Two statistical parameters were used to evaluate the performance of the QSAR models consisting of Pearson's correlation coefficient (\textit{r}) and root mean squared error (RMSE). The \textit{r} value is a commonly used metric to represent the degree of relationship between two variables of interest. It can range from --1 to +1 in which negative values are indicative of negative correlation between two variables and vice versa. RMSE is a commonly used parameter to assess the relative error of the predictive model. The predictive performance of the QSAR models was verified by 10-fold cross-validation, external validation and Y-scrambling test. 
+
+The 10-fold cross-validation technique does not used the entire data set to build predictive model. Instead, it splits the data into training and testing data set by allowing model that is built with training  data set us allow to assess the performance of the model on the testing data set. By performing repeats of the 10-fold validation, the average accuracies can be used to truly assess the performance of the predictive model. 
+
+Y-scrambling test was used to ensure the robustness of the predictive model not only to rule out the possibility of chance correlations but also to assess the statistical significance of \textit{R}$^2$ and \textit{Q}$^2$, ensuring the generalizability of QSAR model. The true Y-dependent variable (i.e. pIC$_{50}$) was randomly scrambled and the statistical assessment parameters are recalculated. \hl{Performance of the Y-scrambling test can be deduced from the regression line of the plot of \textit{R}$^2$ versus \textit{Q}$^2$. Intercept values for \textit{R}$^2$ and \textit{Q}$^2$ as denoted by i\textit{R}$^2$ and i\textit{Q}$^2$, respectively, were calculated. Negative i\textit{Q}$^2$ is indicative of an acceptable QSAR model and that there is no chance correlation from the real model} \citep{eriksson2003methods}. \hl{Furthermore, $r^{2}_{m}$ and $\Delta{r^{2}_{m}}$ metrics introduced as introduced by} \cite{roy2013some} \hl{were used to verify the robustness of the proposed QSAR model in which an acceptable QSAR model should give $r^{2}_{m}$ > 0.5 and $\Delta{r^{2}_{m}}$ < 0.2.} 
+ 
+
+\subsection*{Applicability domain analysis}
+
+\hl{The applicability domain (AD) estimates the likelihood of reliable prediction for compounds on the basis of how similar they are to compounds used to build the model. Thus, compounds falling outside the AD may lead to unreliable predictions. The most common approach for determining AD is described by} \cite{gramatica2007principles} and \cite{tropsha2003importance},  \hl{which is to compute the leverage values for each compound. The leverage value allows one to identify whether new compounds will lie within or outside the domain. Leverage values for all compounds are calculated via adjustment of \textit{X}$^$ to give the hat matrix \textit{H}:}
+%
+\begin{equation}
+H = X(X^TX)^{-1}X^T
+\end{equation}
+%
+\hl{where \textit{X}$^$ is a two-dimensional matrix comprising of \textit{n} compounds and \textit{m} descriptors while \textit{X}$^T$ is the transpose of \textit{X}. Meanwhile, the leverage value of the \textit{i}$^{th}$ compound (h$_{i}$) is the \textit{i}$^{th}$ diagonal element of \textit{H}:}
+%
+\begin{equation}
+h_i = x_i^T(X^TX)^{-1}x_i
+\end{equation}
+%
+\hl{where x$_{i}$ is the descriptor row-vector of the \textit{i}$^{th}$ compound. The warning leverage \textit{h}$^*$ is calculated by:}
+%
+\begin{equation}
+h^* = 3(p+1)/n
+\end{equation}
+%
+
+\hl{Practically, the leverage value along with the William’s plot is often used to assess the AD of QSAR models. The William’s plot is constructed by depicting the standardized residuals versus the leverage value for each compound's h$_{i}$. If the \textit{i}$^{th}$ compound has h$_{i}$ > \textit{h}$^*$ then it means that the \textit{i}$^{th}$ compound exerts a great influence on the QSAR model and may be excluded from the AD. In spite of this, it does not appear to be an outlier because its standardized residual may be small.}
+
+
+\subsection*{Molecular docking}
+
+The co-crystal structure of human AChE with donepezil (PDB ID: 4EY7) was retrieved from the Protein Data Bank and initially prepared by removing alternative side chains and water molecules. The protein was prepared via the rebuilding of bonds and the addition of missing hydrogen atoms. Subsequently, the protein was cleaned by merging the atomic charge and removing lone pair atoms, non-polar hydrogen atoms and non-standard amino acid residues. Grid box was set up to provide coverage of the active site of human AChE with a dimension of 40 $\times$ 30 $\times$ 40 {\AA} (X, Y and Z axes of -13.987, -41.668 and 27.109, respectively). Molecular docking was consequently performed with AutoDock Vina \citep{trott2010autodockvina} using default parameters. The docking protocol was validated in order to ensure its reliability for subsequent analysis of the studied compounds. This was performed by extracting the co-crystal ligand, donepezil, from the PDB file and re-docked to the co-crystal human AChE protein. The root mean squared deviation (RMSD) of the atomic position between the original orientation of the co-crystal ligand and the re-docked ligand is computed and is deemed acceptable if the RMSD value is less than or equal to 2.0 {\AA}.
+
+A set of 30 representative and chemically diverse compounds, which will be referred hereafter as the diversity set, were extracted from the full set of active AChE inhibitors (i.e. IC$_{50}$ < 1 $\mu$M) using the Kennard-Stone algorithm \citep{kennardstone1969}. These compounds were used as ligands for molecular docking against the human AChE. The binding energy (kcal/mol) of AChE inhibitors were calculated according to the built-in scoring function of Autodock Vina and conformers providing the lowest binding energy were selected for further analysis of the binding mode. Furthermore, key-interacting residues and their moiety preferences were analyzed using LigPlot+ \citep{Wallace01021995} and the SiMMap web server \citep{bollback2006simmap}. Finally, three-dimensional structure of protein-ligand interaction was created and visualized using Pymol \citep{pymol2015}.
+
+\section*{Results and discussion}
+
+\subsection*{Chemical space of AChE inhibitors}
+
+Navigation of the chemical space of AChE inhibitors was performed to gain insights into the structure-activity relationship by analyzing the Lipinski's rule-of-five descriptors. Chemical space analysis may provide important knowledge on the general character of compounds governing inhibitory properties of compounds. Exploratory data analysis was performed using the Lipinski's rule-of-five descriptors comprising of MW, ALogP, nHBDon and nHBAcc. MW represents the molecular size of a compound that is commonly used because of it can be easily interpreted and calculated as well as appropriate size of a compound is important for its passage via lipid membrane. ALogP is a widely used parameter for determining the lipophilicity of a compound and used in calculating the membrane penetration and permeability of compounds. nHBDon and nHBAcc describe the number of hydrogen bond donors and hydrogen bond acceptors, respectively, which is used to measuring hydrogen bonding capacity. Visualization of the chemical space of ALogP as a function of MW is shown in Figure \ref{fig:space_1}, as to investigate the chemical space of AChE inhibitors. A dense distribution of inhibitors was observed within the space of MW starting from approximately 300 to 600 Da and within the space of ALogP ranging from approximately -2.5 to 2.5. In addition, the box plot of the Lipinski's descriptors is shown in Fig. \ref{fig:space_2}. Compounds with negative ALogP values approximately of closer to 0.0 can be found in inactive inhibitors whereas most of the active inhibitors tend to possess approximately lower values in average of ALogP values.
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width = 0.7 \linewidth]{Fig_MW_vs_ALogP_Review}
+\caption{Chemical space of AChE inhibitors are shown as actives (green), inactives (red) and intermediates (blue)} 
+\label{fig:space_1} 
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width = \linewidth]{Fig_Lipinski_Box_Plot_Review}
+\caption{Box plot of AChE inhibitors using Lipinski's rule-of-five descriptors (e.g. ALogP, nHBAcc, nHBDon and MW)} 
+\label{fig:space_2} 
+\end{figure}
+
+Visual representation of the overall distribution of data values of Lipinski's descriptors is shown as box plots in Fig. \ref{fig:space_2} in which the ALogP, nHBAcc, nHBDon and MW are shown in the top-left, top-right, bottom-left and bottom-right corner, respectively. Analysis of the box plots revealed that there were no differences amongst the three bioactivity classes for nHBAcc and nHBAcc as deduced from the boundaries of the boxes (i.e. representing the first and third quartiles). ALogP and MW were found to display differences amongst the bioactivity classes. Particularly, ALogP values for actives were the lowest while negligible differences were observed for the other two classes. Furthermore, MW for actives were the largest amongst the three bioactivity classes, which is followed by the intermediates while inactives were smallest. 
+
+
+\subsection*{QSAR model for predicting AChE inhibitory activity}
+
+A data set comprising of \hl{2,570} compounds were used for construction of QSAR models. Particularly, twelve sets of fingerprint descriptors were benchmarked in order to find the best performing set. Prior to modeling, feature selection was applied to remove collinear descriptors. Each of the twelve models were then built using a data split ratio of 80/20 in which 80\% of the data set was used as the internal set and 20\% as the external set. This procedure was iteratively performed in which each of the 100 independent data splits were used for model construction and the performance results given in Table~\ref{performance_random_forest} are the mean and standard deviation values derived from these runs.
+
+It can be observed that all twelve models are capable of capturing the inhibitory activity space of AChE inhibitors as they provided $R^{2}$ and $Q^{2}$ (i.e. both 10-fold CV and external sets) greater than the threshold values proposed by \cite{golbraikh2002beware} of 0.6 and 0.5, respectively, which is indicative of robust model performance. The possibility of chance correlation can be assessed from the $R^{2}$--$Q^{2}$ margin as described by \cite{eriksson1996multivariate} in which values < 0.2--0.3 are indicative of predictive and reliable models while values > 0.2--0.3 suggests possible chance correlation or the presence of outliers in the data set. Furthermore, observation of the $Q^{2}_{CV}$--$Q^{2}_{Ext}$ margin revealed that the difference was negligible with values in the range of 0 and 0.01.
+
+Generally, it can be seen that models with larger descriptor size, namely CDK and CDK extended, afforded the best performance with $Q^{2}_{CV}$ of \hl{0.79$\pm$0.07 and 0.79$\pm$0.06}, respectively, and $Q^{2}_{Ext}$ of \hl{0.80$\pm$0.04 and 0.81$\pm$0.04}, respectively. The opposite also holds true as the model with the least number of descriptors were also found to perform the worst amongst the other fingerprints with $Q^{2}_{CV}$ of \hl{0.55$\pm$0.09 and $Q^{2}_{Ext}$ of 0.56$\pm$0.05}. In a nutshell, the model performance in order of decreasing value is as follows: CDK extended $>$ CDK $>$ MACCS ${\approx}$ Substructure count ${\approx}$ Klekota-Rota count $>$ PubChem $>$ Klekota-Roth ${\approx}$ 2D atom pairs count $>$ CDK graph only $>$ Substructure $>$ 2D atom pairs $>$ E-state.
+
+The best performing model is not necessarily the best choice considering the fact that the descriptor size for the best models were quite high and is consequently prone to overfitting. It was found that the substructure count provided reasonably good predictive performance \hl{(i.e. $Q^{2}_{CV}$ and $Q^{2}_{Ext}$ of 0.78$\pm$0.06 and 0.78$\pm$0.05, respectively)} with the advantage of making use of a small set of \hl{26} descriptors. Therefore, this fingerprint was selected for further interpretation of the feature importance.
+
+\hl{To further check the reliability and validity of the selected model, Y-scrambling test was performed for 100 iterations. Table} \ref{performance_random_forest_rm2} \hl{demonstrates that QSAR models built using substructure count has a low \textit{Q}$^2$} (–0.0013), which rules out the possibility of chance correlation. Furthermore, model afforded an $r^{2}_{m}$ value of 0.61$\pm$0.06 thereby revealing its robustness. It is observed in Table \ref{performance_random_forest_rm2} that the value of $\Delta{r^{2}_{m}}$ is greater that 0.2 but also close to 0.20.}   
+
+As shown in Fig.~\ref{fig:prediction_interval}, it can also be seen that scatter plots of experimental versus predicted pIC$_{50}$ of panels A, C and F displayed narrower variance of the data points than the other methods as assessed via 10-fold cross-validation and external set. 
+
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width = \linewidth]{Fig_Exp_vs_Pred_Review}
+\caption{\textbf{Plot of experimental versus predicted pIC$_{50}$ values for models constructed with 12 different fingerprint descriptors.} Shown are models built with CDK fingerprint (A), CDK extended fingerprint (B), E-State fingerprint (C), CDK graph only fingerprint (D), MACCS fingerprint (E), PubChem fingerprint (F), substructure fingerprint (G), substructure fingerprint count (H), Klekota-Roth fingerprint (I), Klekota-Roth fingerprint count (J), 2D atom pairs (K) and 2D atom pairs count (L).} 
+\label{fig:prediction_interval}
+\end{figure}
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models for predicting pIC$_{50}$.}}
+\label{performance_random_forest}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{CV}$}} & \multirow{2}{*}{\textbf{$R^{2}$--$Q^{2}_{Ext}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$R^{2}$} & \textbf{$RMSE_{Tr}$} &  & \textbf{$Q^{2}_{CV}$} & \textbf{$RMSE_{CV}$} &  & \textbf{$Q^{2}_{Ext}$} & \textbf{$RMSE_{Ext}$} &  &  &  \T\B \\ 
+\hline
+CDK & 960  & 0.93$\pm$0.01 & 0.44$\pm$0.04 &  & 0.79$\pm$0.07 & 0.76$\pm$0.15 &  & 0.80$\pm$0.04 &  0.73$\pm$0.09 &  & 0.14 & 0.13 \T \\
+CDK extended & 948  & 0.94$\pm$0.01 & 0.42$\pm$0.03 &  & 0.79$\pm$0.06 & 0.76$\pm$0.12 &  & 0.81$\pm$0.04 & 0.72$\pm$0.08 &  & 0.15 & 0.13 \\
+CDK graph only & 198  & 0.87$\pm$0.01 & 0.61$\pm$0.03 &  & 0.72$\pm$0.06 & 0.87$\pm$0.13 &  & 0.72$\pm$0.05 & 0.87$\pm$0.09 &  & 0.15 & 0.15 \\
+E-State & 21  & 0.66$\pm$0.03 & 1.00$\pm$0.05 &  & 0.55$\pm$0.09 & 1.11$\pm$0.13 &  & 0.56$\pm$0.05 & 1.10$\pm$0.08 &  & 0.11 & 0.10 \\
+MACCS & 77  & 0.89$\pm$0.01 & 0.56$\pm$0.03 &  & 0.77$\pm$0.07 & 0.81$\pm$0.15 &  & 0.77$\pm$0.04 & 0.80$\pm$0.09 &  & 0.12 & 0.12 \\
+PubChem & 103  & 0.90$\pm$0.01 & 0.55$\pm$0.03 &  & 0.76$\pm$0.05 & 0.80$\pm$0.11 &  & 0.78$\pm$0.03 & 0.79$\pm$0.08 &  & 0.14 & 0.12 \\
+Substructure & 30  & 0.75$\pm$0.01 & 0.85$\pm$0.03 &  & 0.64$\pm$0.06 & 1.00$\pm$0.13 &  & 0.65$\pm$0.05 & 0.98$\pm$0.08 &  & 0.11 & 0.10 \\
+Substructure count & 26  & 0.92$\pm$0.01 & 0.50$\pm$0.02 &  & 0.78$\pm$0.06 & 0.77$\pm$0.14 &  & 0.78$\pm$0.05 & 0.77$\pm$0.10 &  & 0.14 & 0.14 \\
+Klekota-Roth & 111 & 0.89$\pm$0.01 & 0.59$\pm$0.03 &  & 0.74$\pm$0.07 & 0.85$\pm$0.14 &  & 0.76$\pm$0.05 & 0.81$\pm$0.10 &  & 0.15 & 0.13 \\
+Klekota-Roth count & 72 & 0.91$\pm$0.01 & 0.52$\pm$0.03 &  & 0.78$\pm$0.06 & 0.79$\pm$0.14 &  & 0.78$\pm$0.05 & 0.77$\pm$0.11 &  & 0.13 & 0.13 \\
+2D atom pairs & 42  & 0.75$\pm$0.03 & 0.85$\pm$0.06 &  & 0.61$\pm$0.08 & 1.03$\pm$0.15 &  & 0.60$\pm$0.06 & 1.05$\pm$0.12 &  & 0.14 & 0.15 \\
+2D atom pairs count & 38 & 0.92$\pm$0.01 & 0.51$\pm$0.02 &  & 0.74$\pm$0.07 & 0.84$\pm$0.15 &  & 0.76$\pm$0.05 & 0.82$\pm$0.10 &  & 0.18 & 0.16 \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+
+
+\begin{sidewaystable}[!ht]
+\caption{\textbf{Performance summary of QSAR models assessed using i$R^{2}$}, i$Q^{2}$}, $r^{2}_{m}$ and $\Delta{r^{2}_{m}}$ metrics.}}
+\label{performance_random_forest_rm2}
+%\renewcommand{\arraystretch}{1.1} % Spread rows out %
+\setlength\tabcolsep{10pt} % Adjusts column spacing %
+\small
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccc}
+\hline
+%\cline{1-18}
+\textbf{Descriptor class}  & \textbf{\textit{N}} & \multicolumn{2}{c}{\textbf{Training set}} &  & \multicolumn{2}{c}{\textbf{10--fold CV set}} &  & \multicolumn{2}{c}{\textbf{External set}} &  & \multirow{2}{*}{\textbf{i$R^{2}$}} & \multirow{2}{*}{\textbf{i$Q^{2}$}} \T\B \\
+\cline{9-10} \cline{6-7} \cline{3-4}
+ &   & \textbf{$r^{2}_{m}$} & \textbf{$\Delta{r^{2}_{m}}$} &  & \textbf{$r^{2}_{m}$} & \textbf{$\Delta{r^{2}_{m}}$} &  & \textbf{$r^{2}_{m}$} & \textbf{$\Delta{r^{2}_{m}}$} &  &  & \T\B \\ 
+\hline
+CDK & 960  & 0.82$\pm$0.02 & 0.07$\pm$0.01 &  & 0.62$\pm$0.09 & 0.20$\pm$0.06 &  & 0.64$\pm$0.05 &  0.19$\pm$0.03 &  & 0.0003 & --0.0003 \T \\
+CDK extended & 948  & 0.83$\pm$0.01 & 0.07$\pm$0.01 &  & 0.62$\pm$0.08 & 0.20$\pm$0.05 &  & 0.65$\pm$0.05 & 0.18$\pm$0.03 &  & 0.0006 & --0.0005 \\
+CDK graph only & 198  & 0.70$\pm$0.02 & 0.14$\pm$0.01 &  & 0.51$\pm$0.07 & 0.27$\pm$0.05 &  & 0.53$\pm$0.05 & 0.26$\pm$0.03 &  & 0.0007 & --0.0006 \\
+E-State & 21  & 0.35$\pm$0.03 & 0.38$\pm$0.02 &  & 0.27$\pm$0.07 & 0.40$\pm$0.04 &  & 0.28$\pm$0.05 & 0.41$\pm$0.03 &  & 0.0011 & --0.0009 \\
+MACCS & 77  & 0.73$\pm$0.01 & 0.12$\pm$0.01 &  & 0.57$\pm$0.09 & 0.23$\pm$0.05 &  & 0.58$\pm$0.05 & 0.23$\pm$0.03 &  & 0.0005 & --0.0004 \\
+PubChem & 103  & 0.74$\pm$0.02 & 0.12$\pm$0.01 &  & 0.57$\pm$0.07 & 0.23$\pm$0.04 &  & 0.59$\pm$0.05 & 0.22$\pm$0.03 &  & 0.0006 & --0.0005 \\
+Substructure & 30  & 0.50$\pm$0.02 & 0.28$\pm$0.01 &  & 0.39$\pm$0.07 & 0.34$\pm$0.05 &  & 0.41$\pm$0.05 & 0.33$\pm$0.03 &  & 0.0033 & --0.0027 \\
+Substructure count & 26  & 0.77$\pm$0.01 & 0.10$\pm$0.01 &  & 0.60$\pm$0.08 & 0.22$\pm$0.05 &  & 0.61$\pm$0.06 & 0.21$\pm$0.04 &  & 0.0015 & --0.0013 \\
+Klekota-Roth & 111 & 0.71$\pm$0.02 & 0.14$\pm$0.01 &  & 0.54$\pm$0.08 & 0.25$\pm$0.05 &  & 0.56$\pm$0.06 & 0.24$\pm$0.03 &  & 0.0006 & --0.0004 \\
+Klekota-Roth count & 72 & 0.76$\pm$0.02 & 0.11$\pm$0.01 &  & 0.60$\pm$0.08 & 0.22$\pm$0.05 &  & 0.61$\pm$0.07 & 0.21$\pm$0.04 &  & 0.0006 & --0.0005 \\
+2D atom pairs & 42  & 0.49$\pm$0.03 & 0.28$\pm$0.02 &  & 0.35$\pm$0.08 & 0.36$\pm$0.04 &  & 0.35$\pm$0.06 & 0.36$\pm$0.03 &  & 0.0010 & --0.0008 \\
+2D atom pairs count & 38 & 0.75$\pm$0.01 & 0.10$\pm$0.01 &  & 0.52$\pm$0.05 & 0.26$\pm$0.05 &  & 0.54$\pm$0.06 & 0.25$\pm$0.04 &  & 0.0006 & --0.0005 \B \\
+\hline
+\end{tabular}
+%}
+\end{sidewaystable}
+
+
+
+
+\subsection*{Applicability domain}
+
+\hl{The AD of the proposed QSAR model was defined as provided by the Williams plot shown in Fig. \ref{fig:williams}. The employed data set consisting of 2,570 compounds was randomly split to two separate subset in which the first subset constituting 80$\%$ of the data set was used as an internal set while the second subset constituting the remaining 20$\%$ were used as an external set. Compounds representing the internal set (blue dots) and external set (red dots) are shown in the Williams plot and it can be clearly seen that almost all of the 2,570 compounds were located within the boundaries of applicability domain, which indicated that our proposed QSAR model had a well-defined AD.
+
+As can be seen in Fig. \ref{fig:williams}, very few compounds indeed fall outside the $\pm$3 standardized residual range. This consisted of 6 compounds (\textbf{997}, \textbf{1829}, \textbf{62}, \textbf{1096}, \textbf{13}, \textbf{677}) from the internal set and 11 compounds (\textbf{2116}, \textbf{2120}, \textbf{2388}, \textbf{2117}, \textbf{2392}, \textbf{2323}, \textbf{2423}, \textbf{2424}, \textbf{2507}, \textbf{2219}, \textbf{2422}) from the external set that had standardized residual higher than 3. On the other hand, 7 compounds (\textbf{1567}, \textbf{576}, \textbf{1644}, \textbf{1098}, \textbf{2022}, \textbf{1447} and \textbf{322}) from the internal set and 8 compounds (\textbf{2486}, \textbf{2353}, \textbf{2130}, \textbf{2553}, \textbf{2389}, \textbf{2072}, \textbf{2103}, \textbf{2125}) from the external set had standardized residual lower than -3. The corresponding chemical structures are provided in Table S1.
+}
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width = 0.7\linewidth]{Fig_William_Plot}
+\caption{\textbf{William plot for the internal (blue dots) and external (red dots) sets for QSAR model built using substructure fingerprint count. The solid and dashed lines correspond to the $\pm$3 standardized residual and the warning leverage value (h$^*$ = 0.025), respectively. }} 
+\label{fig:williams}
+\end{figure}
+
+
+
+
+\subsection*{Mechanistic interpretation of feature importance}
+
+Feature importance analysis help reveal features that are important toward bioactivity. There are essentially two parameters for evaluating the relative importance of features used in models using the RF algorithm: (i) accuracy and (ii) Gini index (i.e. variance of the responses). The latter was selected as a metric for ranking important features (i.e. mean decrease of the Gini index) for predicting the pIC$_{50}$ of AChE inhibitors (Fig. \ref{fig:importance}). Table~\ref{substructure} lists the substructure fingerprints along with their respective descriptions. 
+
+As can be seen in Fig. \ref{fig:importance}, the top ranking feature is secondary carbon (SubFPC2), which is a carbon atom with two carbon neighbors. In the context of drug design, such central carbon atom may be more difficult to be accessed and metabolized by cytochrome P450 \citep{uetrecht2007drug} and therefore are more metabolically stable. 
+
+
+The second most important feature is the rotatable bond (SubFPC302). Based on the rule of three for defining lead-like compounds, a compound may have a lead-like characters if it does have rotatable bonds of no more than 3. On the other hand, \cite{veber2002molecular} noted that the the upper limit of a orally bioavailable drugs is of seven rotatable bonds. Nevertheless, it has been found that number of rotatable bonds provide better discrimination between compounds that are orally active and those that are not. \cite{kryger1999structure} claimed that E2020 (i.e. also known as donepezil and marketed as Aricept) needs at least two rotatable bonds on each side of the piperidine in which two aromatic moieties of E2020 interact with \hl{Trp86 and Trp286 (human AChE numbering)}, suggesting that links between aromatic systems of the inhibitor against its AChE counterparts are essential to yield high affinity. 
+% I corrected amino acid position from Torpedo AChE to human AChE numbering. (Nutty)
+
+The third important substructure is the aromatic ring (SubFPC274). Findings from X-ray crystallographic study showed that in the binding site of the co-crystal structure of AChE with tacrine, the aromatic ring of acridine engages in a $\pi$-$\pi$ stacking interaction with the indole of \hl{Trp86 (human AChE numbering)} thereby indicating the importance of the aromatic ring for AChE inhibition. \cite{chen2012discovery}
+% I corrected amino acid position from Torpedo AChE to human AChE numbering. (Nutty)
+
+The fourth important feature is C ONS bond (SubFPC295), which is defined as the presence of any carbon connected with either oxygen, nitrogen or sulfur atom in a molecule. These atoms contribute electrostatic charge, which deemed to increase the polarity 
+
+
+The fifth important substructure is secondary mixed amine (SubFPC32). The importance of the moiety was demonstrated in the work of \cite{bembenek2008lead} in which a structure-based approach was used to reveal that in the catalytic triad, \hl{Trp86} interacts with the quaternary amine of ACh through a cation-$\pi$ interaction. Furthermore, in the 'anionic' site \hl{Trp286} appears to attract the amine moiety via cation and/or hydrophobic interactions. 
+% I corrected amino acid position from Torpedo AChE to human AChE numbering. (Nutty)
+
+The sixth, seventh and eighth important substructures are heterocyclic rings (SubFPC275), tertiary carbon (SubFPC3) and primary carbon (SubFPC1). Heterocycles are of high relevance in the design of AChE inhibitors as it allows $\pi$-$\pi$ stacking interaction with key amino acid residues in the binding site of AChE. It is observed that the binding site of the AChE are highly hydrophobic in nature. Particularly, the Trp286 \hl{(human AChE numbering)} which is a part of the peripheral anionic site of the AChE is involved in the $\pi$-$\pi$ interaction with heterocycles of AChE inhibitors \citep{lu2011discovery}. \hl{The aforementioned explanation made for the secondary carbon is also applicable for the tertiary carbon in which the higher number of carbon neighbors would also confer high stability against cytochrome P450 metabolism.}
+% Trp286 is already described by human AChE numbering
+
+The ninth and tenth important substructures are Hetero N nonbasic (SubFPC181) and tertiary aliphatic amine (SubFPC26) in which former is defined as aromatic nitrogen. Present of Nitrogen atom, which is cation moiety deemed to interact with aromatic residues through $\pi$-cation interaction as observed in E2020 agianst \textit{Torpedo californica} AChE (tcAChE). The charge of nitrogen atom located in piperidine ring provide $\pi$-cation interaction with the side chain of Phe337 (Phe330 in tcAChE numbering) \citep{doi:10.1021/jm049695v}. Since the active site gorge of AChE conprised of several aromatic residues, also known as aromatic patch, adding cation moiety possibly increase the binding affinity when the ligand arranged in suitable conformation against aromatic side cahin of residue the active site.
+% it's about pi-cation interaction. The charged nitrogen of the E2020 piperidine ring undergoes a cation-π interaction with the phenyl ring of Phe330 in tcAChE.
+% Reference to "A Docking Score Function for Estimating Ligand-Protein Interactions: Application to Acetylcholinesterase Inhibition" 
+
+
+
+
+
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width = 0.7\linewidth]{Fig_Feature_Importance_Review}
+\caption{\textbf{Plot of feature importance as exemplified by the Gini index.}} 
+\label{fig:importance}
+\end{figure}
+
+
+
+
+
+
+
+
+\begin{table}[!ht]
+\centering
+\setlength\tabcolsep{12pt} % Adjusts column spacing %
+\small
+\caption{\textbf{List of top substructure fingerprints and their corresponding description.}}
+\label{substructure}
+\begin{tabular}{L{2cm}L{5cm}}
+\hline
+\multicolumn{1}{l}{{\bf Fingerprints}} & {\bf Description} \T\B \\ \hline
+SubFPC1 & Primary carbon \T \\
+SubFPC2 & Secondary carbon \\
+SubFPC3 & Tertiary carbon \\
+SubFPC5 & Alkene \\
+SubFPC18 & Alkylaryether \\
+SubFPC23 & Amine \\
+SubFPC26 & Tertiary aliphatic amine \\
+SubFPC28 & Primary aromatic amine   \\
+SubFPC32 & Secondary mixed amine   \\
+SubFPC35 & Ammonium   \\
+SubFPC49 & Ketone \\
+SubFPC88 & Carboxylic acid derivative \\
+SubFPC100 & Secondary amide \\
+SubFPC135 & Carbonyl derivative   \\
+SubFPC137 & Vinylogous ester  \\
+SubFPC143 & Carbonic acid diester \\
+SubFPC153 & Urethan \\
+SubFPC171 & Arylchloride \\
+SubFPC180 & Hetero N basic H   \\
+SubFPC181 & Hetero N nonbasic   \\
+SubFPC182 & Hetero O   \\
+SubFPC184 & Heteroaromatic ring \\
+SubFPC274 & Aromatic ring \\
+SubFPC275 & Heterocyclic ring  \\
+SubFPC276 & Epoxide  \\
+SubFPC287 & Conjugated double bond \\
+SubFPC295 & C ONS bond  \\
+SubFPC296 & Charged \\
+SubFPC298 & Cation \\
+SubFPC300 & 1,3-Tautomerizable    \\
+SubFPC301 & 1,5-Tautomerizable     \\
+SubFPC302 & Rotatable bond   \\
+SubFPC303 & Michael acceptor  \\
+SubFPC307 & Chiral center specified  \B \\ 
+\hline
+\end{tabular}
+\end{table}
+
+
+
+
+\section*{Molecular docking of AChE inhibitors}
+
+\hl{To gain a further understanding on the non-covalent interaction between AChE and their inhibitors, a} chemically diverse set of 30 representative compounds was extracted from active AChE inhibitors (i.e. having IC$_{50}$ < 1 $\mu$M) using the Kennard-Stone algorithm \hl{and subjected to an investigation on its binding modality against the active site of AChE}. Figure \ref{fig:30compounds} shows the distribution of the selected subset of compounds in the context of the full set of actives, which was found to provide a full coverage of the original chemical space. The chemical structures of these compounds are shown in Fig. \ref{fig:chemical_structure}.
+
+\hl{The active site of this enzyme is buried inside a narrow gorge of 20 \AA deep, which permits multiple enzyme-substrate interaction thereby facilitating the formation of the transition state of ACh} \citep{Silman2008proceedings, Yanzi2010catalytic, Jonah2012structures}. \hl{The entry of the active site gorge is lined up by peripheral anionic site (PAS), which is composed of Tyr72, Tyr124, Trp286 and Try341. The function of PAS is to trap the substrate via $\pi$-cation interaction and proceed through the constriction residues Tyr124 and Phe338 and onto the catalytic site} \citep{Silman2008proceedings, Dvir2010Acetylcholinesterase}. As a serine hydrolase, AChE contains Ser203, Glu334 and His447 in the catalytic triad that catalyzed the acylation and deacylation of ACh. The catalytic triad is surrounded by the catalytic anionic site (CAS) (i.e. contains Trp86, Glu202 and Tyr337, oxyanion hole (i.e. comprising of Glu121, Glu122 and Ala204) and the acyl pocket (i.e. comprised of Phe295 and Phe297). These sites help to tie up the ACh and make the substrate arranged in a suitable orientation for interacting with the catalytic triad as well as providing proton transfer that is essential for nucleophilic substituion during the catalytic reaction} \citep{Yanzi2010catalytic}. \hl{As a result of the acylation process, the nucleophilic attack from the O atom of Ser203 to the carbonyl group of ACh affords the proton transfer from Ser203 to His447, which consequently breaks down the choline moiety and forms a covalent acylenzyme complex between Ser203 and the acetyl group. This complex consequently proceeds with deacylation, which follows a similar mechanism with the acylation stage. The protonation of Glu202 provides a water molecule and the proton transfer from His447 to the water molecule leads to the nucleophilic attack against the acetyl group of the complex. Finally, this results in the breaking down of the complex thereby restoring wild-type AChE and causing the release of acetic acid from the active site} \citep{Yanzi2010catalytic}.
+
+% "As a result of the acylation process, the nucleophilic attack from the O atom of Ser203 to the carbonyl group of ACh affords the proton transfer from Ser203 to His447, which consequently breaks down the choline moiety and forms a covalent acylenzyme complex between Ser203 and the acetyl group"
+
+% I mean that proton transfer from Ser203 to His447 lead to nucleophilic attack and consequently break down the choline moiety.
+% Is it similar to your sentence ? (Nutty)
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width = 0.7 \linewidth]{Fig_Kennard_Stone_30}
+\caption{\textbf{Plot showing the distribution of active AChE inhibitors (gray circles) and the diversity set (red circles) selected for molecular docking.}} 
+\label{fig:30compounds}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width = \linewidth]{Fig_Chemical_Structure}
+\caption{\textbf{Chemical structures, binding energy and bioactivity of the diversity set consisting of 30 representative compounds from active AChE inhibitors.}} 
+\label{fig:chemical_structure}
+\end{figure}
+
+Prior to carrying out the molecular docking calculations, the docking protocol was validated by re-docking the co-crystal ligand and protein. It was found that the re-docked ligand exhibited negligible deviation from the co-crystal conformation with an RMSD value of 0.963 {\AA}, which was deemed to be suitable for further molecular docking investigation and its subsequent interpretation. Consequently, the binding modality was analyzed in order to gain understanding on the contribution of key residues in interacting with the investigated set of 30 compounds. This was performed using the SiMMap web server, which revealed three major binding anchors: Hbond1, vdW1 and vdW2 along with their site-moiety preferences. The first anchor site involves hydrogen bond interaction between Tyr124 \hl{(i.e. an important residue in the PAS that is spatially located as a bottleneck between the peripheral region and the catalytic site of AChE)} and the following ligand moieties: secondary amide, secondary amine, nitrogen moiety in aromatic ring, ketone and ester. Such interaction can be observed in the co-crystal structure of huperzine A with human AChE \citep{doi:10.1021/jm300871x}. Interestingly, analysis of the important features from QSAR models also revealed the importance of "C ONS bond" \hl{, "secondary mixed amine", "heterocyclic" and "hetero N non-basic"} as \hl{they were} found to be in the top ten important substructures and is therefore crucial for forming hydrogen bonds. Furthermore, the other anchor sites involve van der Waals interaction in which members of the first van der Waals interaction site (vdW1) are comprised of Tyr124, Phe338 and Tyr341, which has a preference to interact with heterocyclic, aromatic, phenol and other non-polar moieties from representative inhibitors. The second van der Waals' interaction site (vdW2) is consisted of Trp86 and Gly121 with preference for the following ligand moieties: aromatic ring, heterocyclic ring, aliphatic moiety with alkene linkage and phenol moiety. These residues contain either bulky aromatic ring or non-polar moiety as their side chain to provide the van der Waal's surface contact against non-polar moiety from ligands. Notably, aromatic and heterocyclic substructures were also observed in the top ten important substructures for predicting the inhibitory activity of human AChE inhibitors.
+
+Furthermore, analysis of the binding energy from the 30 representative compounds revealed that \hl{compounds \textbf{13}, \textbf{5} and \textbf{28}} exhibited the lowest binding energy of --12.2, \hl{--12.0 and --12.0} kcal/mol\hl{, respectively,} when interacting with the human AChE binding site, which is comparable to donepezil \hl{(--12.2 kcal/mol)} as indicated in Figure \ref{fig:chemical_structure}. Key interacting residues and their moiety preference was \hl{deduced} from the protein-ligand interaction diagram generated by LigPlot+ \citep{Wallace01021995} \hl{in combination with Maestro} \citep{maestro2015} and their three-dimensional structure was visualized by PyMOL \citep{pymol2015}.
+
+\hl{Figures} \ref{fig:docking_ligand013}A-B revealed three major interaction sites for \textbf{13} inside the binding pocket of human AChE. The first interaction site (Fig.~\ref{fig:docking_ligand013}C) is formed by \hl{residues from the PAS consisting of} Trp286 and Tyr341 both of which engages in  $\pi$-$\pi$ stacking interaction where the terminal \hl{benzene and the attached pyrazole moiety} of the ligand interacts with the former residue while the pyrazole moiety of \textbf{13} provide contact with the phenol moiety of the latter residue, which are deemed to increase the binding fitness against the active site of human AChE. 
+The second interaction site (Fig.~\ref{fig:docking_ligand013}D) is dominated by Tyr124 and Phe338 in which the former interacts with the ketone moiety of \textbf{13} by means of a hydrogen bond, which tends to increase the binding affinity of this compound. The side chain of Phe338 is involved in hydrophobic interaction with carbon atoms from the piperidine ring and the central aliphatic chain of \textbf{13}. \hl{It can be noted that these residues are members of constriction site, which arranged as bottleneck of active site.}
+The third interaction site (Fig.~\ref{fig:docking_ligand013}E) is moderated by $\pi$-$\pi$ stacking between Trp86 and the terminal \hl{benzene with an attached piperidine moiety} as well as hydrophobic interaction between Tyr337 and the piperidine moiety of \textbf{13} \hl{in which both residues belonged to the CAS}. \hl{In addition, Gly121 of oxyanion hole also interact with terminal benzene of the ligand through hydrophobic contact increasing binding affinity against catalytic site of AChE.}
+
+\hl{Analysis of the binding modality of compound \textbf{5} revealed interactions with all subsites of the AChE active site gorge. PAS was the first subsite dominated by $\pi$-$\pi$ stacking between Trp286 and the benzisoxazole moiety of compound \textbf{5}, which is essential for stabilizing the binding affinity of the ligand against entry into the gorge. The second interaction site was observed at the constriction site in which the piperidine moiety makes contact with Phe338 via hydrophobic interaction thereby increasing the binding fitness against the bottleneck region of the active site. Similar hydrophobic interaction was also observed in the binding pocket in which Tyr337 from CAS interacts with the piperidine moiety and Gly121 of oxyanion pocket interacts with the terminal benzene of compound \textbf{5}. The $\pi$-$\pi$ interaction between the terminal benzene and Trp86 from the CAS was deemed to increase the binding fitness with the catalytic site of AChE. In addition, H-bond interaction is facilitated by the N atom from Phe295 at the acyl pocket to the O atom from the benzisoxazole moiety. Notably, all sites from the active site gorge are snugly bound by compound \textbf{5}, which is deemed to exhibit strong intermolecular interaction with human AChE.}
+
+\hl{The binding energy of compound \textbf{5} was similar to that of compound \textbf{28}. These compounds possessed several aromatic rings at both terminal, which are favourable for interacting with aromatic residues lining up the surface of the gorge and these are known as the aromatic patch. The 5,7-dihydrophenanthridine moiety facilitates $\pi$-$\pi$ stacking with the side chain of Trp286 from PAS at the gorge opening. Meanwhile, this moiety also engages in hydrophobic interaction with Phe295, which tends to increase the binding fitness for the acyl pocket. Aside from the former moiety, 1,2,3,4-tetrahydroacridine at the opposite terminal provides $\pi$-$\pi$ interaction with Trp86 and hydrophobic contact with Tyr337 where both of which are members of CAS in the catalytic site. Furthermore, long aliphatic chain linking the two aromatic moieties provide hydrophobic contact with several aromatic residues in the aromatic patch consisting of Tyr72, Tyr124, Trp286, Tyr337, Phe338 and Tyr341 (i.e. these residues are the members of PAS, CAS and constriction site of the gorge). Moreover, this chain contain several N atoms, which can act as H-bond donor to Tyr124 and Tyr337 from PAS and CAS, respectively. This would tighten the binding between compound \textbf{28} and the active site gorge.}
+
+\hl{It should be noted that compounds exhibiting strong binding fitness against AChE are those that interact with residues from both PAS and CAS at the entry and inner pocket of the gorge, respectively, as dual-binding site inhibitor through either $\pi$-$\pi$ stacking or $\pi$-cation interaction together with hydrophobic contact. These compounds competes with the natural substrate in interacting with these residues. For non-covalent inhibitors, the aromatic moiety is preferred for occupying the interaction sites while hydrophobic moieties are preferred for making contact with the aromatic residues surrounding the catalytic site. H-bond donor moieties such as secondary amine and heterocyclic ring can be employed for interacting with the O atom on the side chain of Tyr residues. Interestingly, this finding is corroborated by the feature importance results obtained from the QSAR model as shown in} Fig.~\ref{fig:importance} \hl{in which the aromatic moiety, C ONS bond, secondary mixed amine, heterocyclic ring and the hetero N non-basic moiety were found amongst the top ten important substructures that are essential for the bioactivity of AChE inhibitor.}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width = \linewidth]{Fig_Docking_Ligand013}
+\caption{\textbf{Molecular docking of the representative compound 13 against AChE.} Illustration of the binding between AChE (gray colored surface representation) and \textbf{13} (yellow colored ball-and-stick) (A) and a zoom-in view showing the interaction of \textbf{13} with three spatially juxtaposed areas (blue, green and purple) of the AChE binding pocket (B). The first interaction site (green shaded area) situates at the entrance of the binding pocket and primarily engages in $\pi$-$\pi$ stacking interaction (C), the second interaction site (blue shaded area) constitutes hydrogen bond interaction between Tyr124 and ketone moiety while hydrophobic interaction between Phe338 and piperidine ring plus central aliphatic chain of \textbf{13} (D) and the third interaction site (purple shaded area) constitutes $\pi$-$\pi$ stacking between Trp86 and terminal aromatic ring while also affording hydrophobic interaction between Tyr337 and the piperidine moiety of \textbf{13} (E).} 
+\label{fig:docking_ligand013}
+\end{figure}
+
+
+\FloatBarrier
+
+\section*{Conclusion}
+
+In conclusion, twelve sets of fingerprint descriptors were used for constructing QSAR models and their performances were comparatively evaluated. It was observed that several fingerprint descriptors afforded good performance for the constructed models indicating that they could capture the feature space of AChE inhibitors. By taking advantage of the built-in feature importance estimator from RF known as the Gini index, the following important features that are critical for AChE inhibition were identified: \hl{secondary carbon (SubFPC2), rotatable bond (SubFPC302), aromatic (SubFPC274), C ONS bond (SubFPC295), secondary mixed amine (SubFPC32) and heterocyclic (SubFPC275).} Results from molecular docking also support the aforementioned findings from the QSAR models in which the aromatic, heteroaromatic and heterocyclic rings were preferable moieties for interacting with the hydrophobic pocket of AChE. These can be used as a guide for designing novel inhibitors. 
+
+
+\section*{Acknowledgements}
+This research is supported by a Research Career Development Grant (No. RSA5780031) from the Thailand Research Fund and the Swedish Research Links program (No. C0610701) from the Swedish Research Council.
+
+
+\bibliography{AChE-QSAR-ref}
+\end{document}
