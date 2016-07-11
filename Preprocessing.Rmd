@@ -10,7 +10,7 @@ output: pdf_document
 
 Import the bioactivity data obtained from the ChEMBL database as a dataframe. Select the IC50 data subset.
 
-```{r}
+```{r, warning = FALSE, message = FALSE, error = FALSE, tidy = TRUE}
 library(readxl)
 df_raw <- suppressWarnings(read_excel("Human_AChE.xlsx"))
 names <- c("CMPD_CHEMBLID", "CANONICAL_SMILES", "STANDARD_TYPE",
@@ -36,7 +36,7 @@ print(message)
 
 ## Remove redundant rows
 
-```{r, tidy= TRUE}
+```{r, tidy= TRUE, warning = FALSE, message = FALSE, error = FALSE}
 
 ID <- df_4$CMPD_CHEMBLID
 IC50_nm <- df_4$STANDARD_VALUE
@@ -94,4 +94,20 @@ curated <- paste0("number of curated data points where missing smiles are remove
 message <- c(non_redundant_compound, unique, sd_2, combined, curated)
 print(message)
 
+```
+
+
+## Save the resulting dataframe as an excel file
+
+```{r, tidy = TRUE, warning = FALSE, message = FALSE, error = FALSE}
+
+library(xlsx)
+
+curated_smiles <- curated_data_na_removed$CANONICAL_SMILES
+STANDARD_VALUE <- curated_data_na_removed$STANDARD_VALUE
+new_df <- df[df$CANONICAL_SMILES %in% curated_smiles, ]
+get_unique <- new_df[!duplicated(new_df$CANONICAL_SMILES), ]
+new_df_2 <- get_unique[, !(names(get_unique) %in% "STANDARD_TYPE")]
+new_df_3 <- cbind(STANDARD_VALUE, new_df_2)
+write.xlsx(new_df_3, file = "Preprocessed_Human_AChE.xlsx", sheetName = "Sheet1", row.names = FALSE)
 ```
